@@ -9,10 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::table('cars', function (Blueprint $table) {
-            //
+        Schema::create('cars', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->string('license_plate');
+            $table->string('color');
+            $table->string('make');
+            $table->string('model');
+            $table->year('year');
+            $table->json('details');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

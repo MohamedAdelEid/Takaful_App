@@ -9,10 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::table('coverages', function (Blueprint $table) {
-            //
+        Schema::create('coverages', function (Blueprint $table) {
+            $table->id();
+            $table->text('description');
+            $table->decimal('coverage_amount', 10, 2);
+            $table->timestamps();
         });
     }
 

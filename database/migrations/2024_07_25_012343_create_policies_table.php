@@ -9,10 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::table('policies', function (Blueprint $table) {
-            //
+        Schema::create('insurance_type_user', function (Blueprint $table) {
+            $table->unsignedBigInteger('insurance_id');
+            $table->unsignedBigInteger('user_id');
+            $table->decimal('premium', 10, 2);
+            $table->decimal('discount', 10, 2);
+            $table->string('discount_type');
+            $table->primary(['insurance_id', 'user_id']);
+            $table->foreign('insurance_id')->references('id')->on('insurances')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+            $table->timestamps();
         });
     }
 

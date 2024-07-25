@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('insurance_types', function (Blueprint $table) {
-            //
+            $table->id();
+            $table->string('type_name', 100);
+            $table->text('description')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('insurance_types', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('insurance_types');
     }
 };

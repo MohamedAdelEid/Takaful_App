@@ -9,10 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::table('policy_term', function (Blueprint $table) {
-            //
+        Schema::create('policy_term', function (Blueprint $table) {
+            $table->unsignedBigInteger('policy_id');
+            $table->unsignedBigInteger('term_id');
+            $table->primary(['policy_id', 'term_id']);
+            $table->foreign('policy_id')->references('policy_id')->on('policies')->onDelete('cascade');
+            $table->foreign('term_id')->references('id')->on('terms')->onDelete('cascade');
+
+            $table->timestamps();
         });
     }
 
