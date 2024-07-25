@@ -9,10 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::table('departments', function (Blueprint $table) {
-            //
+        Schema::create('departments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('company_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->string('name', 100);
+            $table->text('description');
+            $table->boolean('is_main')->default(true);
+            $table->unique(['company_id','name']);
+            $table->timestamps();
         });
     }
 
@@ -21,8 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('departments', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('departments');
     }
 };

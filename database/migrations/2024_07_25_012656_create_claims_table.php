@@ -9,10 +9,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::table('claims', function (Blueprint $table) {
-            //
+        Schema::create('claims', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('policy_id');
+            $table->enum('status', ['pending', 'approved', 'rejected']);
+            $table->decimal('amount_approved', 10, 2);
+            $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('policy_id')->references('id')->on('policies')->onDelete('cascade');
         });
     }
 
