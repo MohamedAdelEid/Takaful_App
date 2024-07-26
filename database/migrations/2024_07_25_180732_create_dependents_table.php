@@ -9,12 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('coverages', function (Blueprint $table) {
+        Schema::create('dependents', function (Blueprint $table) {
             $table->id();
-            $table->text('description');
-            $table->decimal('coverage_amount', 10, 2);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('relationship');
+            $table->string('passport_number');
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('coverages');
+        Schema::dropIfExists('dependents');
     }
 };

@@ -12,11 +12,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('policy_term', function (Blueprint $table) {
-            $table->unsignedBigInteger('policy_id');
-            $table->unsignedBigInteger('term_id');
+            $table->foreignId('policy_id')->constrained('policies')->cascadeOnDelete();
+            $table->foreignId('term_id')->constrained('terms')->cascadeOnDelete();
             $table->primary(['policy_id', 'term_id']);
-            $table->foreign('policy_id')->references('policy_id')->on('policies')->onDelete('cascade');
-            $table->foreign('term_id')->references('id')->on('terms')->onDelete('cascade');
 
             $table->timestamps();
         });
@@ -27,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('policy_term', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('policy_term');
     }
 };

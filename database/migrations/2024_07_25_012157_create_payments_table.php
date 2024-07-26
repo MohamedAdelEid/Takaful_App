@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('method');
-            $table->decimal('amount', 10, 2);
+            $table->decimal('total_price', 10, 2);
             $table->enum('status', ['pending', 'completed', 'failed']);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
@@ -27,8 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('payments', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('payments');
     }
 };

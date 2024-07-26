@@ -11,14 +11,21 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('cars', function (Blueprint $table) {
+        Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('license_plate');
+            $table->string('plate_number');
+            $table->string('chassis_number');
+            $table->string('type');
+            $table->string('number_of_seats');
+            $table->string('engine_hours_power');
+            $table->string('load_tonnage');
             $table->string('color');
             $table->string('make');
             $table->string('model');
-            $table->year('year');
+            $table->string('vehicle_place_of_registration');
+            $table->string('purpose_of_license');
+            $table->year('year_of_manufacturing');
             $table->json('details');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
@@ -30,8 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('cars', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('vehicles');
     }
 };

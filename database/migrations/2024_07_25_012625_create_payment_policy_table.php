@@ -13,11 +13,9 @@ return new class extends Migration
     {
         Schema::create('payment_policy', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('payment_id');
-            $table->unsignedBigInteger('policy_id');
+            $table->foreignId('payment_id')->constrained('payments')->cascadeOnDelete();
+            $table->foreignId('policy_id')->constrained('policies')->cascadeOnDelete();
             $table->date('date');
-            $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade');
-            $table->foreign('policy_id')->references('policy_id')->on('policies')->onDelete('cascade');
 
             $table->timestamps();
         });
@@ -28,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('payment_policy', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('payment_policy');
     }
 };

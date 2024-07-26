@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('policy_id');
+            $table->string('claim_number')->unique();
             $table->enum('status', ['pending', 'approved', 'rejected']);
-            $table->decimal('amount_approved', 10, 2);
+            $table->decimal('amount_approved', 10, 4);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('policy_id')->references('id')->on('policies')->onDelete('cascade');
@@ -28,8 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('claims', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('claims');
     }
 };

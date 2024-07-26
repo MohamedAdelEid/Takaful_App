@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('company_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('name', 100);
             $table->text('description');
-            $table->boolean('is_main')->default(true);
+            $table->boolean('is_main')->default(false);
             $table->unique(['company_id','name']);
             $table->timestamps();
         });

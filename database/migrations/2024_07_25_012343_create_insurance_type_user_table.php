@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -14,12 +13,12 @@ return new class extends Migration
         Schema::create('insurance_type_user', function (Blueprint $table) {
             $table->unsignedBigInteger('insurance_id');
             $table->unsignedBigInteger('user_id');
-            $table->decimal('premium', 10, 2);
-            $table->decimal('discount', 10, 2);
+            $table->boolean('vip')->default(0);
+            $table->decimal('discount', 10, 4);
             $table->string('discount_type');
             $table->primary(['insurance_id', 'user_id']);
-            $table->foreign('insurance_id')->references('id')->on('insurances')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('insurance_id')->references('id')->on('insurances')->onDelete('cascade')->cascadeOnUpdate();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->cascadeOnUpdate();
 
             $table->timestamps();
         });
@@ -30,8 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('policies', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('insurance_type_user');
     }
 };
