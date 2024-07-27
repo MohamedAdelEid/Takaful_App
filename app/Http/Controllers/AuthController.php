@@ -8,6 +8,7 @@ use App\Traits\ApiResponseTrait;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -89,6 +90,27 @@ class AuthController extends Controller
             return $this->successResponse(null, 'User successfully logged out', 200);
         }catch (\Exception $exception){
             return $this->errorResponse(['message'=>$exception->getMessage()],500);
+        }
+    }
+    public function changePassword(Request $request){
+        try {
+            $user = Auth::user();
+            $validated = Validator::make($request->all(), [
+                'current_password' => 'required|string|min:6',
+                'new_password' => 'required|string|min:6|confirmed'
+            ]);
+            if ($validated->fails()) {
+                return $this->errorResponse($validated->errors(), 422);
+            }
+            $validatedData = $validated->validated();
+            if (!Hash::check($validatedData['current_password'], $user->password)) {
+                return $this->errorResponse('This password does not match Current password', 400);
+            }
+            $user->password = Hash::make($validatedData['new_password']);
+            $user->save();
+            return $this->successResponse(null, 'Password changed successfully');
+        } catch (\Exception $exception) {
+            return $this->errorResponse(['message' => $exception->getMessage()], 500);
         }
     }
 
