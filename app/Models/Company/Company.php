@@ -9,12 +9,15 @@ use Illuminate\Database\Eloquent\Model;
 class Company extends Model
 {
     use HasFactory;
+    protected $table = 'company';
+    public $timestamps = false;
 
+    protected $fillable = ['user_id','city','street','objective'];
     /**
      * Define Relation between company - users [ one - many ]
      */
-    public function users()
+    public function user()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class);
     }
 }
