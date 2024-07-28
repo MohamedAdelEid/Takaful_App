@@ -60,6 +60,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Company::class);
     }
 
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }
     /**
      * Define Relation between users - insurances [ one - many ]
      */
