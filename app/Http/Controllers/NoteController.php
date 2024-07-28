@@ -29,22 +29,26 @@ class NoteController extends Controller
     public function store(Request $request)
     {
         try {
-            $validatedData = Validator::make($request->all(),[
+            $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255',
                 'phone' => 'required|string|max:15',
                 'side' => 'required|string|max:255',
                 'description' => 'required|string',
             ]);
-                if($validatedData->fails()){
-                    return $this->errorResponse(['message' => $validatedData->errors()], 422);
-                }
-            $note = Note::create($validatedData);          
+            if ($validator->fails()) {
+                return $this->errorResponse(['message' => $validator->errors()], 422);
+            }
+            $validatedData = $validator->validated();
+            $validatedData['user_id'] = Auth::id();
+            $note = Note::create($validatedData);
             return $this->successResponse($note, 'Note created successfully', 201);
         } catch (\Exception $e) {
             return $this->errorResponse(['message' => $e->getMessage()], 500);
         }
     }
+    
+
     public function update(Request $request, string $id)
     {
         //
