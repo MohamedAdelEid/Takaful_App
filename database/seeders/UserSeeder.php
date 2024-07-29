@@ -34,5 +34,16 @@ class UserSeeder extends Seeder
             'role' => 'user',
             'phone' => '01114979112'
         ]);
+
+        User::create([
+            'branche_id' => 1,
+            'first_name' => 'Mohamed',
+            'last_name' => 'Saad',
+            'nick_name' => 'SA3DONY',
+            'email' => 'mohamedsaad@gmail.com',
+            'password' => Hash::make('user@123'),
+            'role' => 'user',
+            'phone' => '01098001021'
+        ]);
     }
 }

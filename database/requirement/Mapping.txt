@@ -1,6 +1,6 @@
 - company : [ id , name , objectives , address]
 - departments : [ id ,  company_id , name (UQ) , description , is_main ]
-- insurances : [ id , company_id , user_id , insurance_number , name , 			description , status ]
+- insurances : [ id , company_id , insurance_number , name , description , status ]
 - insurance_types : [ id , name , description  , status]
 - insurance_insurance_type [ insurance_id (PK) , insurance_type_id (PK) ]
 - policies : [ id , branche_id , insurance_id , insurance_type_id , user_id , name , policy_number , - 			start_date  , end_date , total_amount , total_amount_letters , detiles , status ] 
@@ -20,3 +20,4 @@
 - dependents : [ id , user_id , first_name , last_name , relationship , passport_number ]
 - notes : [ id , user_id , description ]
 - branches : [ id , company_id , name , number_branche ]
+- insurance_user [ insurace_id , user_id ]

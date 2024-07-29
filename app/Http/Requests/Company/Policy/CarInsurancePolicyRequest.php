@@ -22,6 +22,7 @@ class CarInsurancePolicyRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'insurance_type_id' => ['required', 'exists:insurance_types,id', "check:insurance_types,id,$this->insurance_type_id,status,active"],
             'car_type' => 'required|string|max:255',
             'car_model' => 'required|string|max:255',
             'car_power' => 'required|integer|min:0',
@@ -37,6 +38,9 @@ class CarInsurancePolicyRequest extends FormRequest
     public function messages()
     {
         return [
+            'insurance_type_id.required' => 'الحقل insurance_type_id مطلوب',
+            'insurance_type_id.in' => 'النوع المحدد للتأمين غير صحيح',
+            'insurance_type_id.check' => 'نوع تأمين غير نشط',
             'car_type.required' => 'نوع السيارة مطلوب',
             'car_type.string' => 'نوع السيارة يجب أن يكون نص',
             'car_type.max' => 'نوع السيارة يجب ألا يزيد عن 255 حرفًا',

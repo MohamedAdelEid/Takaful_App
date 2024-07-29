@@ -13,6 +13,7 @@ class Vehicle extends Model
 
     protected $fillable = [
         'user_id',
+        'policy_id',
         'plate_number',
         'chassis_number',
         'type',

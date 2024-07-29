@@ -10,6 +10,7 @@ class Policy extends Model
 {
     use HasFactory;
     public static $management;
+    public static $insuranceTypeId;
 
     protected $fillable = [
         'branche_id',
@@ -37,7 +38,7 @@ class Policy extends Model
     {
         static::creating(function ($policy) {
             $policyObserver = new PolicyObserver();
-            $policyObserver->creating($policy, static::$management);
+            $policyObserver->creating($policy, static::$management , static::$insuranceTypeId);
         });
     }
     

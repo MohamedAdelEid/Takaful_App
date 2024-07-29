@@ -7,7 +7,7 @@ use App\Models\Company\Branche;
 use App\Models\Company\Company;
 use App\Models\Company\Dependent;
 use App\Models\Company\Insurance;
-use App\Models\Company\Insurance_type;
+use App\Models\Company\InsuranceType;
 use App\Models\Company\Vehicle;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -92,10 +92,10 @@ class User extends Authenticatable implements JWTSubject
     /**
      * Define Relation between users - insurance_types [ many - many ]
      */
-    public function insurance_types()
+    public function insuranceTypes()
     {
         return $this->belongsToMany(
-            Insurance_type::class,
+            InsuranceType::class,
             'insurance_type_user',
             'user_id',
             'insurance_type_id',
