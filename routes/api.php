@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Campany\PolicyController;
 use App\Http\Controllers\NoteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,3 +23,12 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware(['verify.to
 Route::put('change-password', [AuthController::class, 'changePassword'])->middleware(['verify.token']);
 
 Route::resource('note', NoteController::class)->middleware(['verify.token']);
+
+Route::group([
+    'prefix' => 'policy'
+], function () {
+
+    /*------------------------------| Routes Policy |------------------------------*/
+    Route::post('car-insurance', [PolicyController::class, 'storeCarInsurance'])->middleware(['verify.token']);
+
+});

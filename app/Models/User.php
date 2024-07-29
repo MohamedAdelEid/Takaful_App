@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Company\Branche;
 use App\Models\Company\Company;
 use App\Models\Company\Dependent;
 use App\Models\Company\Insurance;
@@ -58,6 +59,14 @@ class User extends Authenticatable implements JWTSubject
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    /**
+     * Define Relation between users - branches [ many - one ]
+     */
+    public function branche()
+    {
+        return $this->belongsTo(Branche::class);
     }
 
     public function notes()

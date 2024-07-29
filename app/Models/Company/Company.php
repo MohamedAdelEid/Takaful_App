@@ -12,7 +12,7 @@ class Company extends Model
     protected $table = 'company';
     public $timestamps = false;
 
-    protected $fillable = ['user_id','city','street','objective'];
+    protected $fillable = ['user_id', 'city', 'street', 'objective'];
     /**
      * Define Relation between company - users [ one - many ]
      */
