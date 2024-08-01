@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Carbon;
 use App\Models\Company\Policy;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -16,5 +18,7 @@ use App\Models\Company\Policy;
 */
 
 Route::get('/', function () {
-
+    $pdf = App::make('dompdf.wrapper');
+    $pdf->loadHTML('<h1>Test</h1>');
+    return $pdf->stream();
 });
