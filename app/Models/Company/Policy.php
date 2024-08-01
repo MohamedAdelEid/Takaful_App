@@ -17,7 +17,6 @@ class Policy extends Model
         'insurance_id',
         'insurance_type_id',
         'user_id',
-        'name',
         'policy_number',
         'start_date',
         'end_date',

@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Campany\PolicyController;
+use App\Http\Controllers\Company\CountryController;
+use App\Http\Controllers\Company\PolicyController;
 use App\Http\Controllers\NoteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,11 +25,23 @@ Route::put('change-password', [AuthController::class, 'changePassword'])->middle
 
 Route::resource('note', NoteController::class)->middleware(['verify.token']);
 
+/*------------------------------| Routes Policy |------------------------------*/
 Route::group([
-    'prefix' => 'policy'
+    'prefix' => 'policy',
+    'middleware' => 'verify.token'
 ], function () {
 
-    /*------------------------------| Routes Policy |------------------------------*/
-    Route::post('car-insurance', [PolicyController::class, 'storeCarInsurance'])->middleware(['verify.token']);
+    /*------------------------------| Route StoreCarInsurance |------------------------------*/
+    Route::post('car-insurance', [PolicyController::class, 'storeCarInsurance']);
+
+    /*------------------------------| Route StoreTravelerInsurance |------------------------------*/
+    Route::post('traveler-insurance', [PolicyController::class, 'storeTravelerInsurance']);
+
+    /*------------------------------| Route StoreTravelerInsurance |------------------------------*/
+    Route::get('days-travel/{country}', [PolicyController::class, 'getDaysByCountry']);
 
 });
+
+/*------------------------------| Route Get All Countries |------------------------------*/
+Route::get('countries', [CountryController::class, 'index']);
+

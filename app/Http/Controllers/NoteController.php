@@ -47,7 +47,7 @@ class NoteController extends Controller
             return $this->errorResponse(['message' => $e->getMessage()], 500);
         }
     }
-    
+
 
     public function update(Request $request, string $id)
     {
@@ -63,10 +63,9 @@ class NoteController extends Controller
             }
             $note->delete();
             return $this->successResponse(null, 'Note deleted successfully', 200);
-        }catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return $this->errorResponse(['message' => 'Note Not found'], 500);
-        }
-         catch (\Exception $e) {
+        } catch (\Exception $e) {
             return $this->errorResponse(['message' => $e->getMessage()], 500);
         }
     }

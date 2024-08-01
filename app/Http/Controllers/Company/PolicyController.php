@@ -1,13 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Campany;
+namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Company\Policy\CarInsurancePolicyRequest;
+use App\Http\Requests\Company\Policy\CarInsuranceRequest;
+use App\Http\Requests\Company\Policy\TravelerInsuranceRequest;
 use App\Models\Company\Insurance;
 use App\Models\Company\Policy;
 use App\Models\Company\Vehicle;
+use App\Models\Company\Country;
+use App\Models\User\Dependent;
+use App\Models\User\Traveler;
 use App\Traits\ApiResponseTrait;
+use App\Helper\Country as CountryHelper;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -28,7 +33,7 @@ class PolicyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function storeCarInsurance(CarInsurancePolicyRequest $request)
+    public function storeCarInsurance(CarInsuranceRequest $request)
     {
         try {
             // Get Car Insurance "insurance_number" = 100 
@@ -79,7 +84,16 @@ class PolicyController extends Controller
                     ]);
 
             // store user_id and insurance_type_id in table insurance_type_user => becouse if know user is vip or no
-            $user->insuranceTypes()->sync($request->insurance_type_id);
+            $user->insuranceTypes()->attach($request->insurance_type_id, [
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+
+            // store user_id and insurance_id in table insurance_user => becouse Relation m - m 
+            $user->insurances()->attach($insurance->id, [
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
 
             // Prepare response data
             $responseData = [
@@ -88,7 +102,7 @@ class PolicyController extends Controller
             ];
 
             return $this->successResponse($responseData, 'Policy Car Insurance Created successfully', 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Log the detailed error message and stack trace
             \Log::error('Error storing car insurance: ' . $e->getMessage(), ['exception' => $e]);
 
@@ -96,7 +110,7 @@ class PolicyController extends Controller
         }
     }
 
-    public function storeTravelersInsurance(Request $request)
+    public function storeTravelerInsurance(TravelerInsuranceRequest $request)
     {
         try {
             // Get Travelers Insurance "insurance_number" = 509
@@ -117,18 +131,90 @@ class PolicyController extends Controller
             Policy::$management = 'GAC';
             Policy::$insuranceTypeId = $insurance->insurance_number;
 
+            $countryId = $request->country_id;
+            $days = $request->days;
+            $startDate = Carbon::parse($request->start_date);
+            $endDate = $startDate->copy()->addDays($days);
+
+            // determine end_date according select country
+            $daysAndPrice = CountryHelper::getDaysByCountry($request->countryId);
+            foreach ($daysAndPrice as $item) {
+                if (($item['days']) == $days) {
+                    $price = ($item['price']);
+                    break;
+                }
+            }
+
             // Create Policy record
             $policy = Policy::create([
                 'branche_id' => $user->branche_id,
                 'insurance_id' => $insurance->id,
-                'insurance_type_id' => null, // This might need a default or valid value
+                'insurance_type_id' => null, // this policy not have insurance_type
                 'user_id' => $user->id,
-                'name' => 'وثيقة تأمين المسافرين',
-                'start_date' => $request->start_date, // Adjust as needed
-                'end_date' => '',
+                'start_date' => $startDate,
+                'total_amount' => $price,
+                'end_date' => $endDate,
             ]);
 
+            // store user_id and insurance_id in table insurance_user => becouse Relation m - m 
+            $user->insurances()->attach($insurance->id, [
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
 
+            // Create or update traveler data
+            $traveler = Traveler::firstOrNew(['user_id' => $user->id]);
+            $traveler->passport_number = $request->passport_number;
+            $traveler->name_in_passport = $request->name_in_passport;
+            $traveler->day_number = $days;
+            $traveler->save();
+
+            // Sync fks in table country_traveler
+            $traveler->countries()->attach($countryId, [
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+
+            // Create dependents department[i][ name , passport ,.....]
+            if ($request->has('dependents')) {
+                foreach ($request->dependents as $dependentData) {
+                    $dependent = Dependent::firstOrNew([
+                        'passport_number' => $dependentData['passport_number']
+                    ]);
+                    $dependent->traveler_id = $traveler->id;
+                    $dependent->passport_name = $dependentData['passport_name'];
+                    $dependent->date_of_birth = $dependentData['date_of_birth'];
+                    $dependent->gender = $dependentData['gender'];
+                    $dependent->save();
+
+                    // Sync fks in table country_dependent
+                    $dependent->countries()->attach($countryId, [
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ]);
+
+                    // Collect dependent information for the response
+                    $dependents[] = $dependent;
+                }
+            }
+
+            $responseData = [
+                'policy' => $policy,
+                'traveler' => $traveler,
+                'dependents' => $dependents
+            ];
+
+            return $this->successResponse($responseData, 'Policy Traveler Insurance Created Successfully');
+        } catch (Exception $e) {
+            return $this->errorResponse(['massage' => 'An error occurred', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getDaysByCountry(Country $country)
+    {
+        try {
+            $data = CountryHelper::getDaysByCountry($country->id);
+            return $this->successResponse($data, 'Days and Price retrieved successfully');
         } catch (Exception $e) {
             return $this->errorResponse(['massage' => 'An error occurred', 'error' => $e->getMessage()], 500);
         }

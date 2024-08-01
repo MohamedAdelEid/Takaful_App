@@ -2,15 +2,10 @@
 
 namespace App\Models\Company;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Insurance extends Model
+class Country extends Model
 {
     use HasFactory;
-
-    /**
-     * Define Relation between insurances - users [ many - one ]
-     */
 }

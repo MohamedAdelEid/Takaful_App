@@ -4,7 +4,7 @@ namespace App\Http\Requests\Company\Policy;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CarInsurancePolicyRequest extends FormRequest
+class CarInsuranceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

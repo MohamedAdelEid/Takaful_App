@@ -12,7 +12,7 @@ class PolicyObServer
     /**
      * Handle the policy "created" event.
      */
-    public function creating(Policy $policy, $management , $insuranceTypeId): void
+    public function creating(Policy $policy, $management, $insuranceTypeId): void
     {
         // get branche_number for user will make policy from this branche 
         $brancheNumber = Auth::user()->branche->branche_number;
@@ -26,13 +26,14 @@ class PolicyObServer
         $month = Carbon::now()->month;
 
         //get insurance_type_number
-        $insuranceTypeNumber = InsuranceType::where('id' , $insuranceTypeId)->value('insurance_type_number');
+        $insuranceTypeNumber = InsuranceType::where('id', $insuranceTypeId)->value('insurance_type_number');
+        $insuranceTypeNumber = $insuranceTypeNumber ?? $insuranceTypeId;
 
-        // generate number it consists of four numbers for each branche special-number start from start month
-
-        // get last policy for this branche
+        /*
+         * generate number it consists of four numbers for each branche special-number start from start month
+         */
+        // => get last policy for this branche
         $lastPolicy = Policy::where('branche_id', '=', $brancheNumber)->whereMonth('created_at', $month)->latest()->first();
-        $today = Carbon::today()->day;
 
         if ($lastPolicy) {
             $numberLastPolicy = $lastPolicy->policy_number;

@@ -9,6 +9,7 @@ use App\Models\Company\Dependent;
 use App\Models\Company\Insurance;
 use App\Models\Company\InsuranceType;
 use App\Models\Company\Vehicle;
+use App\Models\User\Traveler;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -61,6 +62,14 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Company::class);
     }
 
+    /** 
+     * Define Relation between users - branches [ many - one ]
+     */
+    public function traveler()
+    {
+        return $this->hasOne(Traveler::class);
+    }
+
     /**
      * Define Relation between users - branches [ many - one ]
      */
@@ -72,13 +81,6 @@ class User extends Authenticatable implements JWTSubject
     public function notes()
     {
         return $this->hasMany(Note::class);
-    }
-    /**
-     * Define Relation between users - insurances [ one - many ]
-     */
-    public function insurances()
-    {
-        return $this->hasMany(Insurance::class);
     }
 
     /**
@@ -103,6 +105,23 @@ class User extends Authenticatable implements JWTSubject
             'id'
         );
     }
+
+    /**
+     * Define Relation between users - insurance [ many - many ]
+     */
+    public function insurances()
+    {
+        return $this->belongsToMany(
+            Insurance::class,
+            'insurance_user',
+            'user_id',
+            'insurance_id',
+            'id',
+            'id'
+        );
+    }
+
+
 
     /**
      * Define Relation between users - dependents [ one - many ]
