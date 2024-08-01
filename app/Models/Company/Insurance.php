@@ -11,6 +11,11 @@ class Insurance extends Model
     use HasFactory;
 
     /**
-     * Define Relation between insurances - users [ many - one ]
+     * Define Relation between insurances - policy [ many - one ]
      */
+
+    public function policies()
+    {
+        return $this->hasMany(Policy::class);
+    }
 }

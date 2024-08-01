@@ -27,7 +27,23 @@ class PolicyController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $policies = Policy::get();
+
+            $policies->each(function ($policy) {
+                $policy->type_policy = $policy->insurance->name;
+                $policy->name_user = $policy->user->first_name . ' ' . $policy->user->last_name;
+                $policy->branche_name = $policy->branche->name;
+                unset($policy->insurance);
+                unset($policy->branche_id);
+                unset($policy->branche);
+                unset($policy->user);
+            });
+
+            return $this->successResponse($policies, 'Policies retrieved successfully!', 200);
+        } catch (Exception $e) {
+            return $this->errorResponse(['An error occurred'], 500);
+        }
     }
 
     /**
@@ -204,7 +220,7 @@ class PolicyController extends Controller
                 'dependents' => $dependents
             ];
 
-            return $this->successResponse($responseData, 'Policy Traveler Insurance Created Successfully');
+            return $this->successResponse($responseData, 'Policy Traveler Insurance Created Successfully', 200);
         } catch (Exception $e) {
             return $this->errorResponse(['massage' => 'An error occurred', 'error' => $e->getMessage()], 500);
         }

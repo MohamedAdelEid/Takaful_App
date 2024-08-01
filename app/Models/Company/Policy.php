@@ -2,6 +2,7 @@
 
 namespace App\Models\Company;
 
+use App\Models\User;
 use App\Observers\Company\PolicyObServer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -33,12 +34,22 @@ class Policy extends Model
     {
         return $this->belongsTo(Branche::class);
     }
+
+    public function insurance()
+    {
+        return $this->belongsTo(Insurance::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     protected static function booted()
     {
         static::creating(function ($policy) {
             $policyObserver = new PolicyObserver();
-            $policyObserver->creating($policy, static::$management , static::$insuranceTypeId);
+            $policyObserver->creating($policy, static::$management, static::$insuranceTypeId);
         });
     }
-    
+
 }

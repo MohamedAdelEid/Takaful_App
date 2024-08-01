@@ -8,6 +8,7 @@ use App\Models\Company\Company;
 use App\Models\Company\Dependent;
 use App\Models\Company\Insurance;
 use App\Models\Company\InsuranceType;
+use App\Models\Company\Policy;
 use App\Models\Company\Vehicle;
 use App\Models\User\Traveler;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -59,7 +60,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function company()
     {
-        return $this->belongsTo(Company::class);
+        return $this->hasOne(Company::class);
     }
 
     /** 
@@ -121,14 +122,20 @@ class User extends Authenticatable implements JWTSubject
         );
     }
 
-
-
     /**
      * Define Relation between users - dependents [ one - many ]
      */
     public function dependents()
     {
         return $this->hasMany(Dependent::class);
+    }
+
+    /**
+     * Define Relation between users - policies [ one - many ]
+     */
+    public function policies()
+    {
+        return $this->hasMany(Policy::class);
     }
     public function getJWTIdentifier()
     {

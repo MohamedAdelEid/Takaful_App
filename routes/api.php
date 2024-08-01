@@ -22,6 +22,7 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware(['verify.token']);
 Route::put('change-password', [AuthController::class, 'changePassword'])->middleware(['verify.token']);
+Route::get('profile', [AuthController::class, 'profile'])->middleware(['verify.token']);
 
 Route::resource('note', NoteController::class)->middleware(['verify.token']);
 
@@ -39,6 +40,9 @@ Route::group([
 
     /*------------------------------| Route StoreTravelerInsurance |------------------------------*/
     Route::get('days-travel/{country}', [PolicyController::class, 'getDaysByCountry']);
+
+    /*------------------------------| Route GetAllTypePolices |------------------------------*/
+    Route::get('/', [PolicyController::class, 'index']);
 
 });
 

@@ -16,18 +16,21 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class AuthController extends Controller
 {
     use ApiResponseTrait;
-    public function register(Request $request){
+    public function register(Request $request)
+    {
         try {
-            $validator = Validator::make($request->all(),[
+            $validator = Validator::make($request->all(), [
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'nick_name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email',
                 'password' => 'required|string|min:6',
                 'role' => 'required|string|in:user,company',
-                'phone' => 'required', 'string', 'max:15|unique:users,phone',
+                'phone' => 'required',
+                'string',
+                'max:15|unique:users,phone',
             ]);
-            if ($validator->fails()){
+            if ($validator->fails()) {
                 return response()->json($validator->errors(), 422);
             }
             $user = User::create([
@@ -36,43 +39,42 @@ class AuthController extends Controller
                 'nick_name' => $request->nick_name,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
-                'role'=>$request->role,
-                'phone'=>$request->phone,
+                'role' => $request->role,
+                'phone' => $request->phone,
             ]);
-            if ($request->role == 'company')
-            {
+            if ($request->role == 'company') {
                 Company::create([
                     'user_id' => $user->id
                 ]);
             }
             $token = JWTAuth::fromUser($user);
             $user['token'] = $token;
-            return  $this->successResponse($user,'User Registered Successfully',201);
-        }catch (QueryException $exception) {
+            return $this->successResponse($user, 'User Registered Successfully', 201);
+        } catch (QueryException $exception) {
             if ($exception->errorInfo[1] === 1062) {
                 return $this->errorResponse(['message' => 'enter valid phone number'], 409);
             }
             return $this->errorResponse(['message' => $exception->getMessage()], 500);
-        }catch (\Exception $exception){
-            return $this->errorResponse(['message'=>$exception->getMessage()],500);
+        } catch (\Exception $exception) {
+            return $this->errorResponse(['message' => $exception->getMessage()], 500);
         }
     }
     public function login(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'email' => ['required','email'],
-                'password' => ['required','string'],
+                'email' => ['required', 'email'],
+                'password' => ['required', 'string'],
             ]);
             if ($validator->fails()) {
-                return $this->errorResponse($validator->errors(),422);
+                return $this->errorResponse($validator->errors(), 422);
             }
 
             if (!$token = JWTAuth::attempt($request->only('email', 'password'))) {
-                return $this->errorResponse('Invalid email or Password',401);
+                return $this->errorResponse('Invalid email or Password', 401);
             }
             $user = auth()->user();
-            if($user->role == 'company'){
+            if ($user->role == 'company') {
                 $user['data'] = $user->company;
             }
             unset($user['data']);
@@ -81,18 +83,20 @@ class AuthController extends Controller
                 'token' => $token,
             ], 'User logged in successfully', 200);
         } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(),500);
+            return $this->errorResponse($e->getMessage(), 500);
         }
     }
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
         try {
             JWTAuth::invalidate(JWTAuth::getToken());
             return $this->successResponse(null, 'User successfully logged out', 200);
-        }catch (\Exception $exception){
-            return $this->errorResponse(['message'=>$exception->getMessage()],500);
+        } catch (\Exception $exception) {
+            return $this->errorResponse(['message' => $exception->getMessage()], 500);
         }
     }
-    public function changePassword(Request $request){
+    public function changePassword(Request $request)
+    {
         try {
             $user = Auth::user();
             $validated = Validator::make($request->all(), [
@@ -109,6 +113,30 @@ class AuthController extends Controller
             $user->password = Hash::make($validatedData['new_password']);
             $user->save();
             return $this->successResponse(null, 'Password changed successfully');
+        } catch (\Exception $exception) {
+            return $this->errorResponse(['message' => $exception->getMessage()], 500);
+        }
+    }
+
+    public function profile()
+    {
+        try {
+            $user = Auth::user();
+            if (!$user) {
+                return $this->errorResponse('No Authenticated User', 401);
+            }
+
+            if ($user->role == 'company') {
+                $company = $user->company;
+                $user = [
+                    'user' => $user->makeHidden('role'),
+                    'company' => $company
+                ];
+            } elseif ($user->role == 'user') {
+                $user = $user->makeHidden('role');
+            }
+
+            return $this->successResponse(['user' => $user], 'User retrieved Successfully');
         } catch (\Exception $exception) {
             return $this->errorResponse(['message' => $exception->getMessage()], 500);
         }
