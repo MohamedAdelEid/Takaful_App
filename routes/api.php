@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\PolicyController;
 use App\Http\Controllers\NoteController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,9 +22,10 @@ use Illuminate\Support\Facades\Route;
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware(['verify.token']);
+Route::post('delete-user', [AuthController::class, 'deleteUser'])->middleware(['verify.token']);
 Route::put('change-password', [AuthController::class, 'changePassword'])->middleware(['verify.token']);
 Route::get('profile', [AuthController::class, 'profile'])->middleware(['verify.token']);
-
+Route::get('users', [UserController::class, 'getUsers'])->middleware(['verify.token']);
 Route::resource('note', NoteController::class)->middleware(['verify.token']);
 
 /*------------------------------| Routes Policy |------------------------------*/

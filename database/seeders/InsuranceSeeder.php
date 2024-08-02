@@ -16,18 +16,18 @@ class InsuranceSeeder extends Seeder
      */
     public function run(): void
     {
-        // $campanyId = Company::first()->id;
-        // Insurance::create([
-        //     'company_id' => $campanyId,
-        //     'insurance_number' => 100,
-        //     'name' => 'تأمين السيارات',
-        // ]);
+         $campanyId = Company::first()->id;
+         Insurance::create([
+             'company_id' => $campanyId,
+             'insurance_number' => 100,
+             'name' => 'تأمين السيارات',
+         ]);
 
-        // Insurance::create([
-        //     'company_id' => $campanyId,
-        //     'insurance_number' => 509,
-        //     'name' => 'تأمين المسافرين',
-        // ]);
+         Insurance::create([
+             'company_id' => $campanyId,
+             'insurance_number' => 509,
+             'name' => 'تأمين المسافرين',
+         ]);
 
         $insuranceId = Insurance::where('insurance_number', 100)->value('id');
         $insuranceTypeId = InsuranceType::where('insurance_type_number', 103)->value('id');

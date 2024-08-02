@@ -14,18 +14,18 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'first_name' => 'Takaful',
-            'last_name' => 'Admin',
-            'nick_name' => 'Takaful',
-            'email' => 'takaful@gmail.com',
-            'password' => Hash::make('admin@123'),
-            'role' => 'company',
-            'phone' => '0910024721'
-        ]);
+//        User::create([
+//            'first_name' => 'Takaful',
+//            'last_name' => 'Admin',
+//            'nick_name' => 'Takaful',
+//            'email' => 'takaful@gmail.com',
+//            'password' => Hash::make('admin@123'),
+//            'role' => 'company',
+//            'phone' => '0910024721'
+//        ]);
 
         User::create([
-            'branche_id' => 1,
+            'branche_id' => 3,
             'first_name' => 'Mohamed',
             'last_name' => 'Adel',
             'nick_name' => 'AB3DEL',
@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'branche_id' => 1,
+            'branche_id' => 3,
             'first_name' => 'Mohamed',
             'last_name' => 'Saad',
             'nick_name' => 'SA3DONY',

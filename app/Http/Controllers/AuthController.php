@@ -117,7 +117,6 @@ class AuthController extends Controller
             return $this->errorResponse(['message' => $exception->getMessage()], 500);
         }
     }
-
     public function profile()
     {
         try {
@@ -141,5 +140,16 @@ class AuthController extends Controller
             return $this->errorResponse(['message' => $exception->getMessage()], 500);
         }
     }
-
+    public function deleteUser(Request $request){
+        try {
+            $user = User::find(Auth::id());
+            if (!$user){
+                return $this->errorResponse('user not found', 404);
+            }
+            $user->delete();
+            return $this->successResponse(null, 'User deleted successfully ');
+        }catch (\Exception $exception) {
+            return $this->errorResponse(['message' => $exception->getMessage()], 500);
+        }
+    }
 }
