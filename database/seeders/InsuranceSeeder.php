@@ -16,25 +16,36 @@ class InsuranceSeeder extends Seeder
      */
     public function run(): void
     {
-         $campanyId = Company::first()->id;
-         Insurance::create([
-             'company_id' => $campanyId,
-             'insurance_number' => 100,
-             'name' => 'تأمين السيارات',
-         ]);
+        $campanyId = Company::whereHas('user', function ($query) {
+            $query->where('email', 'takaful@gmail.com');
+        })->value('id');
 
-         Insurance::create([
-             'company_id' => $campanyId,
-             'insurance_number' => 509,
-             'name' => 'تأمين المسافرين',
-         ]);
+        Insurance::create([
+            'company_id' => $campanyId,
+            'insurance_number' => 100,
+            'name' => 'تأمين السيارات',
+        ]);
+
+        Insurance::create([
+            'company_id' => $campanyId,
+            'insurance_number' => 509,
+            'name' => 'تأمين المسافرين',
+        ]);
 
         $insuranceId = Insurance::where('insurance_number', 100)->value('id');
+        // insuranceType الاجباري
         $insuranceTypeId = InsuranceType::where('insurance_type_number', 103)->value('id');
+
+        // insuranceType البرتقاليه
+        $insuranceTypeId2 = InsuranceType::where('insurance_type_number', 104)->value('id');
 
         DB::table('insurance_insurance_type')->insert([
             'insurance_id' => $insuranceId,
             'insurance_type_id' => $insuranceTypeId
+        ]);
+        DB::table('insurance_insurance_type')->insert([
+            'insurance_id' => $insuranceId,
+            'insurance_type_id' => $insuranceTypeId2
         ]);
     }
 }
