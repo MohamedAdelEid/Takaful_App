@@ -17,7 +17,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Meneses\LaravelMpdf\Facades\LaravelMpdf as PDF;
 
 class PolicyController extends Controller
 {
@@ -116,6 +117,23 @@ class PolicyController extends Controller
                 'policy' => $policy,
                 'vehicle' => $vehicle,
             ];
+
+            /* 
+             * Generate pdf for car insurance policy
+             */
+            $namePdf = 'compulsoryCarInsurance_' . $policy->policy_number . '_' . time() . '.pdf';
+            $directoryPath = 'pdf/policies/compulsoryCarInsurance/';
+            $pathPdf = $directoryPath . $namePdf;
+
+            // Ensure the directory exists
+            if (!Storage::exists($directoryPath)) {
+                Storage::makeDirectory($directoryPath);
+            }
+            $pdf = PDF::loadView('policy.generatePdf.compulsoryInsurancePolicy', compact('policy'))->save(storage_path('app/' . $pathPdf));
+
+            // Save the file path to the database
+            $policy->pdf_path = config('app.url') . '/storage/' . $pathPdf;
+            $policy->save();
 
             return $this->successResponse($responseData, 'Policy Car Insurance Created successfully', 200);
         } catch (Exception $e) {

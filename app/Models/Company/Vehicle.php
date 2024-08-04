@@ -35,4 +35,9 @@ class Vehicle extends Model
     {
         return $this->belongsTo(User::class)->withDefault();
     }
+
+    public function policy()
+    {
+        return $this->belongsTo(Policy::class);
+    }
 }

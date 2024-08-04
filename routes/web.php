@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Carbon;
 use App\Models\Company\Policy;
+
 // use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 
 
@@ -18,7 +19,5 @@ use App\Models\Company\Policy;
 */
 
 Route::get('/', function () {
-    $pdf = PDF::loadView('policy.generatePdf.compulsoryInsurancePolicy');
-
-    return $pdf->stream('document.pdf');
+    dd(config('app.url'));
 });

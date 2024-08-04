@@ -44,6 +44,11 @@ class Policy extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function vehicle()
+    {
+        return $this->hasOne(Vehicle::class);
+    }
     protected static function booted()
     {
         static::creating(function ($policy) {
