@@ -23,3 +23,8 @@ Route::get('/', function () {
     $dd= Currency::format(640, false);
     dd($dd);
 });
+
+Route::get('/test', function () {
+    $policy = Policy::find(1);
+}
+);
