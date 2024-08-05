@@ -1,5 +1,6 @@
 <?php
 
+use App\Helper\Currency;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Carbon;
 use App\Models\Company\Policy;
@@ -19,5 +20,6 @@ use App\Models\Company\Policy;
 */
 
 Route::get('/', function () {
-    dd(config('app.url'));
+    $dd= Currency::format(640, false);
+    dd($dd);
 });

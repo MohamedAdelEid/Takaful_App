@@ -145,4 +145,12 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    
+    public function getAddressAttribute(){
+        if(!$this->governorate){
+            return null;
+        } 
+        return $this->governorate . ' | ' . $this->city . ' | ' . $this->street;
+    }
 }

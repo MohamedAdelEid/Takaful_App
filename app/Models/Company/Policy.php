@@ -13,6 +13,11 @@ class Policy extends Model
     public static $management;
     public static $insuranceTypeId;
 
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i',
+        'updated_at' => 'datetime:Y-m-d H:i',
+    ];
+
     protected $fillable = [
         'branche_id',
         'insurance_id',
@@ -49,6 +54,11 @@ class Policy extends Model
     {
         return $this->hasOne(Vehicle::class);
     }
+
+    public function premium()
+    {
+        return $this->hasOne(Premium::class);
+    }
     protected static function booted()
     {
         static::creating(function ($policy) {
@@ -56,5 +66,17 @@ class Policy extends Model
             $policyObserver->creating($policy, static::$management, static::$insuranceTypeId);
         });
     }
+
+    public function getPdfPathAttribute()
+    {
+        // Check if pdf_path is set
+        if ($this->attributes['pdf_path']) {
+            return config('app.url') . $this->attributes['pdf_path'];
+        }
+
+        // Return a default value or null if not set
+        return null;
+    }
+
 
 }

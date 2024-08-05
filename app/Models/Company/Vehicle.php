@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Vehicle extends Model
 {
     use HasFactory;
-    
+
 
     protected $fillable = [
         'user_id',
@@ -39,5 +39,10 @@ class Vehicle extends Model
     public function policy()
     {
         return $this->belongsTo(Policy::class);
+    }
+
+    protected static function booted()
+    {
+
     }
 }

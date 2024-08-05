@@ -16,7 +16,7 @@ class PolicyObServer
     {
         // get branche_number for user will make policy from this branche 
         $brancheNumber = Auth::user()->branche->branche_number;
-        $formattedNumber = str_pad($brancheNumber, 2, '0', STR_PAD_LEFT);
+        $paddingBrancheNumber = str_pad($brancheNumber, 2, '0', STR_PAD_LEFT);
 
         // get year policy
         $year = Carbon::now()->year;
@@ -24,6 +24,7 @@ class PolicyObServer
 
         // get month policy
         $month = Carbon::now()->month;
+        $paddingMonth = str_pad($month, 2, '0', STR_PAD_LEFT);
 
         //get insurance_type_number
         $insuranceTypeNumber = InsuranceType::where('id', $insuranceTypeId)->value('insurance_type_number');
@@ -37,13 +38,13 @@ class PolicyObServer
 
         if ($lastPolicy) {
             $numberLastPolicy = $lastPolicy->policy_number;
-            $serialNumber = (int) substr($numberLastPolicy, -4);
-            $serialNumber = "000" . $serialNumber + 1;
+            $serialNumber = (int) substr($numberLastPolicy, -4) + 1;
+            $paddingSerialNumber = str_pad($serialNumber, 4, '0', STR_PAD_LEFT);
         } else {
             $serialNumber = "0001";
         }
 
-        $policy->policy_number = $formattedNumber . $lastTwoDigitYear . $month . $management . $insuranceTypeNumber . $serialNumber;
+        $policy->policy_number = $paddingBrancheNumber . $lastTwoDigitYear . $paddingMonth . $management . $insuranceTypeNumber . $paddingSerialNumber;
     }
 
 

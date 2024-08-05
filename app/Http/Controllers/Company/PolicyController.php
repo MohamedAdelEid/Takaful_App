@@ -5,14 +5,17 @@ namespace App\Http\Controllers\Company;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Company\Policy\CarInsuranceRequest;
 use App\Http\Requests\Company\Policy\TravelerInsuranceRequest;
+use App\Jobs\GeneratePolicyCarInsurancePdf;
 use App\Models\Company\Insurance;
 use App\Models\Company\Policy;
+use App\Models\Company\Premium;
 use App\Models\Company\Vehicle;
 use App\Models\Company\Country;
 use App\Models\User\Dependent;
 use App\Models\User\Traveler;
 use App\Traits\ApiResponseTrait;
 use App\Helper\Country as CountryHelper;
+use App\Helper\Policy as PolicyHelper;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -78,9 +81,14 @@ class PolicyController extends Controller
                 'insurance_type_id' => $request->insurance_type_id, // This might need a default or valid value
                 'user_id' => $user->id,
                 'name' => 'وثيقة تأمين سيارة',
-                'start_date' => Carbon::now()->addDay(), // Adjust as needed
-                'end_date' => Carbon::now()->addYear()->addDay(),
+                'start_date' => Carbon::now()->addDay(),
+                'end_date' => Carbon::now()->addYear(),
             ]);
+
+            // Get the premium details based on the car power
+            $premuim = PolicyHelper::getPremiumByPowerCar($request->car_power);
+            $premuim['policy_id'] = $policy->id;
+            $premuim = Premium::create($premuim);
 
             // Create Vehicle record
             $vehicle = Vehicle::create([
@@ -95,6 +103,7 @@ class PolicyController extends Controller
                 'chassis_number' => $request->car_chassis_number,
                 'color' => $request->car_color,
                 'vehicle_place_of_registration' => $request->car_governorate,
+                'purpose_of_license' => 'خاصة',
             ])->setHidden([
                         'user_id',
                         'policy_id'
@@ -112,28 +121,18 @@ class PolicyController extends Controller
                 'updated_at' => Carbon::now(),
             ]);
 
-            // Prepare response data
-            $responseData = [
-                'policy' => $policy,
-                'vehicle' => $vehicle,
-            ];
-
             /* 
              * Generate pdf for car insurance policy
              */
-            $namePdf = 'compulsoryCarInsurance_' . $policy->policy_number . '_' . time() . '.pdf';
-            $directoryPath = 'pdf/policies/compulsoryCarInsurance/';
-            $pathPdf = $directoryPath . $namePdf;
+            // Dispatch the job for PDF generation
+            GeneratePolicyCarInsurancePdf::dispatch($policy);
 
-            // Ensure the directory exists
-            if (!Storage::exists($directoryPath)) {
-                Storage::makeDirectory($directoryPath);
-            }
-            $pdf = PDF::loadView('policy.generatePdf.compulsoryInsurancePolicy', compact('policy'))->save(storage_path('app/' . $pathPdf));
-
-            // Save the file path to the database
-            $policy->pdf_path = config('app.url') . '/storage/' . $pathPdf;
-            $policy->save();
+            // Prepare response data
+            $responseData = [
+                'policy' => $policy,
+                'premuim' => $premuim,
+                'vehicle' => $vehicle,
+            ];
 
             return $this->successResponse($responseData, 'Policy Car Insurance Created successfully', 200);
         } catch (Exception $e) {

@@ -13,8 +13,7 @@
             padding: 20px;
         }
 
-        .policy {
-        }
+        .policy {}
 
         .table-container {
             border-radius: 10px;
@@ -72,7 +71,7 @@
 
         <div class="policy-no">
             <span> رقم الوثيقة : &nbsp; &nbsp; &nbsp; </span><span style="text-align: center">Policy No : &nbsp; &nbsp;
-                &nbsp; </span><span class="number">M552405MTR1030001</span>
+                &nbsp; </span><span class="number">{{ $policy->policy_number }}</span>
         </div>
 
         <table style="width: 100% ; font-size: 13px ; font-weight:bold">
@@ -81,7 +80,7 @@
                     <span>الوكيل :</span>
                 </td>
                 <td style="text-align: center">
-                    <span>مكتب محمد عادل</span>
+                    <span>{{ $policy->branche->name }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>: Agent</span>
@@ -92,7 +91,7 @@
                     <span>إسم المؤمن له :</span>
                 </td>
                 <td style="text-align: center">
-                    <span>mohamed adel</span>
+                    <span>{{ $policy->user->first_name . ' ' . $policy->user->last_name }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>: Insured Name </span>
@@ -103,7 +102,7 @@
                     <span>عنوانه :</span>
                 </td>
                 <td style="text-align: center">
-                    <span></span>
+                    <span>{{ $policy->user->address }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>: Insured Address </span>
@@ -114,7 +113,7 @@
                     <span>رقم الهاتف :</span>
                 </td>
                 <td style="text-align: center">
-                    <span></span>
+                    <span>{{ $policy->user->phone }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>: Tel Number </span>
@@ -125,8 +124,8 @@
                     <span>مدة التامين :</span>
                 </td>
                 <td style="text-align:">
-                    <span> من يوم &nbsp; <span>6/5/2024</span></span> &nbsp; &nbsp;
-                    <span>الي يوم &nbsp; <span>5/8/2006</span></span>
+                    <span> من يوم &nbsp; <span>{{ $policy->start_date }}</span></span> &nbsp; &nbsp;
+                    <span>الي يوم &nbsp; <span>{{ $policy->end_date }}</span></span>
                 </td>
                 <td style="text-align: left">
                     <span>: Insured Period </span>
@@ -150,7 +149,7 @@
                     <span>النوع :</span>
                 </td>
                 <td style="text-align: center">
-                    <span>ودي - 8A</span>
+                    <span>{{ $policy->vehicle->type }}</span>
                 </td>
                 <td style="text-align: left">
                     <span> Car Type</span>
@@ -161,7 +160,7 @@
                     <span>الحمولة بالطن</span>
                 </td>
                 <td style="text-align: center">
-                    <span></span>
+                    <span>{{ $policy->vehicle->load_tonnage }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>Load Tonnage</span>
@@ -172,7 +171,7 @@
                     <span>قوة المحرك </span>
                 </td>
                 <td style="text-align: center">
-                    <span>16</span>
+                    <span>{{ $policy->vehicle->engine_hours_power }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>Engine Hours Power</span>
@@ -183,7 +182,7 @@
                     <span> عدد المقاعد (باستثناء السائق)</span>
                 </td>
                 <td style="text-align: center">
-                    <span>4</span>
+                    <span>{{ $policy->vehicle->number_of_seats }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>Number of seats (Execluding driv)</span>
@@ -194,7 +193,7 @@
                     <span>سنة الصنع</span>
                 </td>
                 <td style="text-align: center">
-                    <span>2020</span>
+                    <span>{{ $policy->vehicle->year_of_manufacturing }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>Year of Manufacturing</span>
@@ -205,7 +204,7 @@
                     <span>رقم اللوحة</span>
                 </td>
                 <td style="text-align: center">
-                    <span>20202</span>
+                    <span>{{ $policy->vehicle->plate_number }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>Plate Number</span>
@@ -216,7 +215,7 @@
                     <span>رقم الهيكل</span>
                 </td>
                 <td style="text-align: center">
-                    <span>01212</span>
+                    <span>{{ $policy->vehicle->chassis_number }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>Chassis Number</span>
@@ -227,7 +226,7 @@
                     <span>لون السيارة</span>
                 </td>
                 <td style="text-align: center">
-                    <span>أسود</span>
+                    <span>{{ $policy->vehicle->color }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>Color</span>
@@ -238,7 +237,7 @@
                     <span>الغرض من الترخيص</span>
                 </td>
                 <td style="text-align: center">
-                    <span>خاصة</span>
+                    <span>{{ $policy->vehicle->purpose_of_license }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>Purpose of License</span>
@@ -262,10 +261,10 @@
                     <span>صافي القسط</span>
                 </td>
                 <td>
-                    <span>64.000</span>
+                    <span>{{ $policy->premium->net_premiums }}</span>
                 </td>
-                <td style="text-align: left">
-                    <span>Net Premium</span>
+                <td style="text-align: left;">
+                    &nbsp; &nbsp; <span>Net Premium</span>
                 </td>
             </tr>
             <tr>
@@ -273,9 +272,9 @@
                     <span>لضريبة</span>
                 </td>
                 <td>
-                    <span>1.000</span>
+                    <span>{{ $policy->premium->tax }}</span>
                 </td>
-                <td style="text-align: left">
+                <td style="text-align: left;">
                     <span>Tax</span>
                 </td>
             </tr>
@@ -284,7 +283,7 @@
                     <span>رسوم إشراف</span>
                 </td>
                 <td>
-                    <span>0.320</span>
+                    <span>{{ $policy->premium->supervision_fees }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>Supervision Fees</span>
@@ -295,7 +294,7 @@
                     <span>الدمغة</span>
                 </td>
                 <td>
-                    <span>0.500 </span>
+                    <span>{{ $policy->premium->stamps }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>Stamps</span>
@@ -306,7 +305,7 @@
                     <span>مصاريف إصدار</span>
                 </td>
                 <td>
-                    <span>2020</span>
+                    <span>{{ $policy->premium->issuance_fees }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>Issuance Fees</span>
@@ -319,8 +318,8 @@
                     <span>إجمالي القسط</span>
                 </td>
                 <td dir="ltr" style="text-align: right;">
-                    <span>68.820</span> &nbsp; &nbsp;
-                    <span>L.D</span>
+                    <span>{{ $policy->premium->total_premium }}</span> &nbsp; &nbsp;
+                    <span>{{ config('app.currency') }}</span>
                 </td>
                 <td style="text-align: left">
                     <span>Total Premium</span>
@@ -335,7 +334,7 @@
             <span>.Insurance Takaful Co</span>
         </p>
         <p style="text-align: center; padding-top:0px ; font-weight:bold">
-            <span>التاريخ : </span> &nbsp; &nbsp; <span>5/4/2024</span> &nbsp; &nbsp; &nbsp; &nbsp;
+            <span>التاريخ : </span> &nbsp; &nbsp; <span>{{ $policy->created_at }}</span> &nbsp; &nbsp; &nbsp; &nbsp;
             <span> : Date</span>
         </p>
 
