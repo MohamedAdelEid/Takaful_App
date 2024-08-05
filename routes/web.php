@@ -21,5 +21,6 @@ use App\Models\Company\Policy;
 
 Route::get('/', function () {
     $dd= Currency::format(640, false);
-    dd($dd);
+    dd('hi : mohamed saad');
+
 });
