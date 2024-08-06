@@ -41,7 +41,7 @@ class PolicyObServer
             $serialNumber = (int) substr($numberLastPolicy, -4) + 1;
             $paddingSerialNumber = str_pad($serialNumber, 4, '0', STR_PAD_LEFT);
         } else {
-            $serialNumber = "0001";
+            $paddingSerialNumber = "0001";
         }
 
         $policy->policy_number = $paddingBrancheNumber . $lastTwoDigitYear . $paddingMonth . $management . $insuranceTypeNumber . $paddingSerialNumber;

@@ -21,4 +21,21 @@ class UserController extends Controller
             return $this->errorResponse(['message' => $exception->getMessage()], 500);
         }
     }
+    public function userActivation(User $user){
+        try {
+
+            $user->update(['status' => 'active']);
+            return $this->successResponse($user,'user activated successfully');
+        }catch (\Exception $exception) {
+            return $this->errorResponse(['message' => $exception->getMessage()], 500);
+        }
+    }
+    public function disableUser(User $user){
+        try {
+            $user->update(['status' => 'inactive']);
+            return $this->successResponse($user,'user disabled successfully');
+        }catch (\Exception $exception) {
+            return $this->errorResponse(['message' => $exception->getMessage()], 500);
+        }
+    }
 }

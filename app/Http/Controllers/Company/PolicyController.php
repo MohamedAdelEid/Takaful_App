@@ -253,27 +253,23 @@ class PolicyController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //
+    }
+    public function getMandatoryPolicies(){
+        try {
+            $data = Policy::where('insurance_type_id',1)->get();
+            if(!$data){
+                return $this->errorResponse(['massage' => 'No policies found'], 404);
+            }
+            return $this->successResponse($data, 'Mandatory Policies retrieved successfully');
+        }catch(\Exception $e){
+            return $this->errorResponse(['massage' => $e->getMessage()],500);
+        }
     }
 }

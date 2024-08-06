@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Company\CountryController;
-use App\Http\Controllers\Company\PolicyController;
-use App\Http\Controllers\NoteController;
-use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\NoteController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\Company\PolicyController;
+use App\Http\Controllers\Company\CountryController;
+use App\Http\Controllers\Company\VehicleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,13 @@ Route::post('delete-user', [AuthController::class, 'deleteUser'])->middleware(['
 Route::put('change-password', [AuthController::class, 'changePassword'])->middleware(['verify.token']);
 Route::get('profile', [AuthController::class, 'profile'])->middleware(['verify.token']);
 Route::get('users', [UserController::class, 'getUsers'])->middleware(['verify.token']);
+
+
+ //New
+Route::get('user-activation/{user}', [UserController::class, 'userActivation'])->middleware(['verify.token']);
+Route::get('disable-user/{user}', [UserController::class, 'disableUser'])->middleware(['verify.token']);
+
+
 Route::resource('note', NoteController::class)->middleware(['verify.token']);
 
 /*------------------------------| Routes Policy |------------------------------*/
@@ -45,9 +53,14 @@ Route::group([
 
     /*------------------------------| Route GetAllTypePolices |------------------------------*/
     Route::get('/', [PolicyController::class, 'index']);
+    //New
+    Route::get('/get-mandatory-policies', [PolicyController::class, 'getMandatoryPolicies']);
 
 });
 
 /*------------------------------| Route Get All Countries |------------------------------*/
 Route::get('countries', [CountryController::class, 'index']);
 
+ //New
+Route::get('get-all-cars-model',[VehicleController::class,'geAllVehiclesModel']);
+Route::get('get-all-cars-colors',[VehicleController::class,'geAllVehiclesColor']);
