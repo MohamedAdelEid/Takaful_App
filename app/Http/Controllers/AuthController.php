@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Customs\Services\SendResetPasswordService;
 use App\Models\Company\Company;
 use App\Models\User;
 use App\Traits\ApiResponseTrait;
@@ -16,6 +17,10 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class AuthController extends Controller
 {
     use ApiResponseTrait;
+    public function __construct(private SendResetPasswordService $resetPasswordService)
+    {
+    }
+
     public function register(Request $request)
     {
         try {
@@ -150,6 +155,44 @@ class AuthController extends Controller
             return $this->successResponse(null, 'User deleted successfully ');
         }catch (\Exception $exception) {
             return $this->errorResponse(['message' => $exception->getMessage()], 500);
+        }
+    }
+
+    public function sendResetPassword(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                'email' => ['required', 'string', 'email', 'exists:users,email']
+            ]);
+            if ($validator->fails()) {
+                return $this->errorResponse($validator->errors(), 422);
+            }
+            $user = User::where('email',$request->email)->first();
+            if($user){
+                $this->resetPasswordService->sendResetPasswordLink($user->email);
+                return $this->successResponse(null,'Reset password link sent successfully');
+            }
+        }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+            return $this->errorResponse('User Not Found',404);
+        }
+         catch(\Exception $e){
+            return $this->errorResponse(['message' => $e->getMessage()],500);
+        } 
+    }
+    public function resetPassword(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => ['required', 'string', 'email', 'exists:users,email'],
+                'password' => ['required', 'string', 'min:8', 'confirmed']
+            ]);
+            if ($validator->fails()) {
+                return $this->errorResponse($validator->errors(), 422);
+            }
+            $user = User::where('email', $request->email)->first();
+                $user->password = bcrypt($request->password);
+                $user->save();
+                return $this->successResponse(null, 'Password reset successfully');  
+        } catch (\Exception $e) {
+            return $this->errorResponse(['message' => $e->getMessage()], 500);
         }
     }
 }

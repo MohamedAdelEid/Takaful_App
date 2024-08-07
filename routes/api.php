@@ -27,7 +27,8 @@ Route::post('delete-user', [AuthController::class, 'deleteUser'])->middleware(['
 Route::put('change-password', [AuthController::class, 'changePassword'])->middleware(['verify.token']);
 Route::get('profile', [AuthController::class, 'profile'])->middleware(['verify.token']);
 Route::get('users', [UserController::class, 'getUsers'])->middleware(['verify.token']);
-
+Route::post('send-reset-password',[AuthController::class, 'sendResetPassword']);
+Route::post('reset-password',[AuthController::class, 'ResetPassword']);
 
  //New
 Route::get('user-activation/{user}', [UserController::class, 'userActivation'])->middleware(['verify.token']);
