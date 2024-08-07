@@ -31,26 +31,6 @@ use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
 
-    $trip = Trip::with(['traveler.user.branche', 'dependents', 'policy.premium'])->latest()->first();
-            $namePdf = 'TRAVELER-INSURANCE-' . $trip->policy->policy_number . '-' . time() . '.pdf';
-            $mainDirectoryPath = 'pdf/policies/traveler-Insurance/';
-            $pathPdf = $mainDirectoryPath . $namePdf;
-
-            if (!Storage::exists($mainDirectoryPath)) {
-                Storage::makeDirectory($mainDirectoryPath);
-            }
-
-            $pdf = PDF::loadView('policy.generatePdf.travelInsurancePolicy', ['trip' => $trip])
-                ->save(storage_path('app/' . $pathPdf));
-
-            $trip->policy->pdf_path = '/storage/' . $pathPdf;
-            $trip->policy->save();
-
-    // $trip = Trip::with(['traveler.user.branche', 'dependents', 'policy.premium'])->latest()->first();
-    // // $co = new Traveler;
-    // // // dd($policy->user->traveler->dependents->count() == 1);
-    // $pdf = PDF::loadView('policy.generatePdf.travelInsurancePolicy', compact('trip'));
-    // return $pdf->stream();
 });
 
 Route::get(

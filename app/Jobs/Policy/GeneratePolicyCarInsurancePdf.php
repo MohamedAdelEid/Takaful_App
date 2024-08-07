@@ -30,18 +30,28 @@ class GeneratePolicyCarInsurancePdf implements ShouldQueue
      */
     public function handle(): void
     {
-        $policyPdfData = Policy::where('id', $this->policy->id)->with(['user', 'branche', 'vehicle', 'premium'])->first();
-        $namePdf = 'compulsory_car_insurance_' . $policyPdfData->policy_number . '_' . time() . '.pdf';
-        $directoryPath = 'pdf/policies/compulsory-car-Insurance/';
-        $pathPdf = $directoryPath . $namePdf;
+        try {
+            $policy = Policy::where('id', $this->policy->id)
+                ->with(['user', 'branche', 'vehicle', 'premium'])
+                ->first();
 
-        if (!Storage::exists($directoryPath)) {
-            Storage::makeDirectory($directoryPath);
+            // generate path 
+            $namePdf = 'COMPULSORY-CAR-INSURANCE-' . $policy->policy_number . '_' . time() . '.pdf';
+            $directoryPath = 'pdf/policies/compulsory-car-Insurance/';
+            $pathPdf = $directoryPath . $namePdf;
+
+            if (!Storage::disk('public')->exists($directoryPath)) {
+                Storage::disk('public')->makeDirectory($directoryPath);
+            }
+
+            $pdf = PDF::loadView('policy.generatePdf.compulsoryInsurancePolicy', ['policy' => $policy])
+                ->save(storage_path('app/public/' . $pathPdf));
+
+            $policy->pdf_path = $pathPdf;
+            $policy->save();
+        } catch (\Exception $e) {
+            \Log::error('PDF Generation failed: ' . $e->getMessage());
+            throw $e;
         }
-
-        $pdf = PDF::loadView('policy.generatePdf.compulsoryInsurancePolicy', ['policy' => $policyPdfData])->save(storage_path('app/' . $pathPdf));
-
-        $this->policy->pdf_path = '/storage/' . $pathPdf;
-        $this->policy->save();
     }
 }

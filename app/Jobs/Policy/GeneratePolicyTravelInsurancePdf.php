@@ -36,19 +36,22 @@ class GeneratePolicyTravelInsurancePdf implements ShouldQueue
     public function handle(): void
     {
         try {
-            $trip = Trip::where('id', $this->trip->id)->with(['traveler.user.branche', 'dependents', 'policy.premium'])->first();
+            $trip = Trip::where('id', $this->trip->id)
+                ->with(['traveler.user.branche', 'dependents', 'policy.premium'])
+                ->first();
+
             $namePdf = 'TRAVELER-INSURANCE-' . $trip->policy->policy_number . '-' . time() . '.pdf';
             $mainDirectoryPath = 'pdf/policies/traveler-Insurance/';
             $pathPdf = $mainDirectoryPath . $namePdf;
 
-            if (!Storage::exists($mainDirectoryPath)) {
-                Storage::makeDirectory($mainDirectoryPath);
+            if (!Storage::disk('public')->exists($mainDirectoryPath)) {
+                Storage::disk('public')->makeDirectory($mainDirectoryPath);
             }
 
             $pdf = PDF::loadView('policy.generatePdf.travelInsurancePolicy', ['trip' => $trip])
-                ->save(storage_path('app/' . $pathPdf));
+                ->save(storage_path('app/public/' . $pathPdf));
 
-            $trip->policy->pdf_path = '/storage/' . $pathPdf;
+            $trip->policy->pdf_path = $pathPdf;
             $trip->policy->save();
         } catch (\Exception $e) {
             \Log::error('PDF Generation failed: ' . $e->getMessage());
