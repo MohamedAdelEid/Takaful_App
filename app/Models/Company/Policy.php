@@ -77,7 +77,7 @@ class Policy extends Model
     {
         // Check if pdf_path is set
         if ($this->attributes['pdf_path']) {
-            return config('app.url') . '/storage/' . $this->attributes['pdf_path'];
+            return config('app.url') . '/public/storage/' . $this->attributes['pdf_path'];
         }
 
         // Return a default value or null if not set
