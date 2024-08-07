@@ -3,6 +3,7 @@
 namespace App\Models\Company;
 
 use App\Models\User;
+use App\Models\User\Trip;
 use App\Observers\Company\PolicyObServer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -53,6 +54,11 @@ class Policy extends Model
     public function vehicle()
     {
         return $this->hasOne(Vehicle::class);
+    }
+
+    public function trip()
+    {
+        return $this->hasOne(Trip::class);
     }
 
     public function premium()
