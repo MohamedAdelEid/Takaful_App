@@ -14,9 +14,9 @@ class Dependent extends Model
     /**
      * Define Relation between dependents - travelers [ many - one ]
      */
-    public function traveler()
+    public function trips()
     {
-        return $this->belongsTo(Traveler::class);
+        return $this->belongsToMany(Trip::class, 'dependent_trip', 'dependent_id', 'trip_id');
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Policy;
 
 use App\Models\Company\Policy;
 use Illuminate\Bus\Queueable;
@@ -32,7 +32,7 @@ class GeneratePolicyCarInsurancePdf implements ShouldQueue
     {
         $policyPdfData = Policy::where('id', $this->policy->id)->with(['user', 'branche', 'vehicle', 'premium'])->first();
         $namePdf = 'compulsory_car_insurance_' . $policyPdfData->policy_number . '_' . time() . '.pdf';
-        $directoryPath = 'pdf/policies/compulsoryCarInsurance/';
+        $directoryPath = 'pdf/policies/compulsory-car-Insurance/';
         $pathPdf = $directoryPath . $namePdf;
 
         if (!Storage::exists($directoryPath)) {

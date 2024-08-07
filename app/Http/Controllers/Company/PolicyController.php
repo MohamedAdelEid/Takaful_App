@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Company;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Company\Policy\CarInsuranceRequest;
 use App\Http\Requests\Company\Policy\TravelerInsuranceRequest;
-use App\Jobs\GeneratePolicyCarInsurancePdf;
+use App\Jobs\Policy\GeneratePolicyCarInsurancePdf;
+use App\Jobs\Policy\GeneratePolicyTravelInsurancePdf;
 use App\Models\Company\Insurance;
 use App\Models\Company\Policy;
 use App\Models\Company\Premium;
@@ -13,6 +14,7 @@ use App\Models\Company\Vehicle;
 use App\Models\Company\Country;
 use App\Models\User\Dependent;
 use App\Models\User\Traveler;
+use App\Models\User\Trip;
 use App\Traits\ApiResponseTrait;
 use App\Helper\Country as CountryHelper;
 use App\Helper\Policy as PolicyHelper;
@@ -169,15 +171,6 @@ class PolicyController extends Controller
             $startDate = Carbon::parse($request->start_date);
             $endDate = $startDate->copy()->addDays($days);
 
-            // determine end_date according select country
-            $daysAndPrice = CountryHelper::getDaysByCountry($request->countryId);
-            foreach ($daysAndPrice as $item) {
-                if (($item['days']) == $days) {
-                    $price = ($item['price']);
-                    break;
-                }
-            }
-
             // Create Policy record
             $policy = Policy::create([
                 'branche_id' => $user->branche_id,
@@ -185,7 +178,6 @@ class PolicyController extends Controller
                 'insurance_type_id' => null, // this policy not have insurance_type
                 'user_id' => $user->id,
                 'start_date' => $startDate,
-                'total_amount' => $price,
                 'end_date' => $endDate,
             ]);
 
@@ -196,45 +188,65 @@ class PolicyController extends Controller
             ]);
 
             // Create or update traveler data
-            $traveler = Traveler::firstOrNew(['user_id' => $user->id]);
-            $traveler->passport_number = $request->passport_number;
-            $traveler->name_in_passport = $request->name_in_passport;
-            $traveler->day_number = $days;
-            $traveler->save();
+            $traveler = Traveler::where('user_id', $user->id)->first();
+            if (!$traveler) {
+                $traveler = Traveler::create([
+                    'user_id' => $user->id,
+                    'passport_number' => $request->passport_number,
+                    'name_in_passport' => $request->name_in_passport,
+                    'gender' => $request->gender,
+                    'date_of_birth' => $request->date_of_birth,
+                ]);
+            }
 
-            // Sync fks in table country_traveler
-            $traveler->countries()->attach($countryId, [
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
+            // create trip
+            $trip = Trip::create([
+                'traveler_id' => $traveler->id,
+                'country_id' => $countryId,
+                'policy_id' => $policy->id,
+                'days' => $days
             ]);
+
+
+            // Create Premiums for traveler insurance
+            $premium = PolicyHelper::getPremiumsTravelerInsurance($days, $countryId, $traveler);
+            $premium['policy_id'] = $policy->id;
+            Premium::create($premium);
 
             // Create dependents department[i][ name , passport ,.....]
             if ($request->has('dependents')) {
                 foreach ($request->dependents as $dependentData) {
-                    $dependent = Dependent::firstOrNew([
-                        'passport_number' => $dependentData['passport_number']
-                    ]);
-                    $dependent->traveler_id = $traveler->id;
-                    $dependent->passport_name = $dependentData['passport_name'];
-                    $dependent->date_of_birth = $dependentData['date_of_birth'];
-                    $dependent->gender = $dependentData['gender'];
-                    $dependent->save();
 
-                    // Sync fks in table country_dependent
-                    $dependent->countries()->attach($countryId, [
-                        'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now(),
-                    ]);
+                    $dependent = Dependent::where('passport_number', $dependentData['passport_number'])->first();
+
+                    if (!$dependent) {
+                        $dependent = Dependent::create([
+                            'passport_name' => $dependentData['passport_name'],
+                            'date_of_birth' => $dependentData['date_of_birth'],
+                            'gender' => $dependentData['gender'],
+                            'passport_number' => $dependentData['passport_number'],
+                        ]);
+                    }
+
+                    // Sync fks in table dependent_trip
+                    $dependent->trips()->attach($trip->id);
 
                     // Collect dependent information for the response
                     $dependents[] = $dependent;
                 }
             }
 
+            /* 
+             * Generate pdf for car insurance policy
+             */
+            // Dispatch the job for PDF generation
+            GeneratePolicyTravelInsurancePdf::dispatch($trip);
+
             $responseData = [
                 'policy' => $policy,
                 'traveler' => $traveler,
-                'dependents' => $dependents
+                'dependents' => $dependents,
+                'premium' => $premium
             ];
 
             return $this->successResponse($responseData, 'Policy Traveler Insurance Created Successfully', 200);
@@ -261,15 +273,16 @@ class PolicyController extends Controller
     {
         //
     }
-    public function getMandatoryPolicies(){
+    public function getMandatoryPolicies()
+    {
         try {
-            $data = Policy::where('insurance_type_id',1)->get();
-            if(!$data){
+            $data = Policy::where('insurance_type_id', 1)->get();
+            if (!$data) {
                 return $this->errorResponse(['massage' => 'No policies found'], 404);
             }
             return $this->successResponse($data, 'Mandatory Policies retrieved successfully');
-        }catch(\Exception $e){
-            return $this->errorResponse(['massage' => $e->getMessage()],500);
+        } catch (\Exception $e) {
+            return $this->errorResponse(['massage' => $e->getMessage()], 500);
         }
     }
 }

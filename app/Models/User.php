@@ -5,7 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Company\Branche;
 use App\Models\Company\Company;
-use App\Models\Company\Dependent;
+use App\Models\User\Dependent;
 use App\Models\Company\Insurance;
 use App\Models\Company\InsuranceType;
 use App\Models\Company\Policy;
@@ -146,11 +146,12 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    
-    public function getAddressAttribute(){
-        if(!$this->governorate){
+
+    public function getAddressAttribute()
+    {
+        if (!$this->governorate) {
             return null;
-        } 
+        }
         return $this->governorate . ' | ' . $this->city . ' | ' . $this->street;
     }
 }

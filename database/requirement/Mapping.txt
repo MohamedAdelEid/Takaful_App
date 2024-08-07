@@ -21,5 +21,5 @@
 - insurance_user [ insurace_id , user_id ]
 - travelers : [ id , user_id , region , passport_number , name_in_passport , day_number ]
 - countries : [ id , name , short_name , flag_img , country_code ] 
-- country_traveler [ id , country_id , traveler_id ]
-- country_dependent [ id, country_id , dependent_id ]
+- trip : [id , traveler_id , country_id ,days ]
+- dependent_trip [ dependent_id , trip_id ]
