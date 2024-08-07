@@ -8,6 +8,7 @@ use App\Http\Requests\Company\Policy\TravelerInsuranceRequest;
 use App\Jobs\Policy\GeneratePolicyCarInsurancePdf;
 use App\Jobs\Policy\GeneratePolicyTravelInsurancePdf;
 use App\Models\Company\Insurance;
+use App\Models\Company\InsuranceType;
 use App\Models\Company\Policy;
 use App\Models\Company\Premium;
 use App\Models\Company\Vehicle;
@@ -63,6 +64,17 @@ class PolicyController extends Controller
 
             if (!$insurance) {
                 return $this->errorResponse(['message' => 'Insurance not found'], 404);
+            } else if ($insurance->status != 'active') {
+                return $this->errorResponse(['message' => 'Insurance is inactive'], 404);
+            }
+
+            // Get Car Insurance_type "insurance_number" = 103 
+            $insuranceType = InsuranceType::where('insurance_type_number', '103')->first();
+
+            if (!$insuranceType) {
+                return $this->errorResponse(['message' => 'insurance Type not found'], 404);
+            } else if ($insuranceType->status != 'active') {
+                return $this->errorResponse(['message' => 'Insurance Type is inactive'], 404);
             }
 
             // Ensure the user is authenticated
@@ -74,13 +86,13 @@ class PolicyController extends Controller
 
             // Set management property for Policy model
             Policy::$management = 'MTR';
-            Policy::$insuranceTypeId = $request->insurance_type_id;
+            Policy::$insuranceTypeId = $insuranceType->id;
 
             // Create Policy record
             $policy = Policy::create([
                 'branche_id' => $user->branche_id,
                 'insurance_id' => $insurance->id,
-                'insurance_type_id' => $request->insurance_type_id, // This might need a default or valid value
+                'insurance_type_id' => $insuranceType->id, // This might need a default or valid value
                 'user_id' => $user->id,
                 'name' => 'وثيقة تأمين سيارة',
                 'start_date' => Carbon::now()->addDay(),
@@ -112,7 +124,7 @@ class PolicyController extends Controller
                     ]);
 
             // store user_id and insurance_type_id in table insurance_type_user => becouse if know user is vip or no
-            $user->insuranceTypes()->attach($request->insurance_type_id, [
+            $user->insuranceTypes()->attach($insuranceType->id, [
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
