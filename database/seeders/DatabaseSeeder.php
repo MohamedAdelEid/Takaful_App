@@ -14,13 +14,14 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            UserSeeder::class,
-            CompanySeeder::class,
-            BrancheSeeder::class,
-            InsuranceTypeSeeder::class,
-            InsuranceSeeder::class,
-            ItemSeeder::class,
-            AvailableCarSeeder::class
+            // UserSeeder::class,
+            // CompanySeeder::class,
+            // BrancheSeeder::class,
+            // InsuranceTypeSeeder::class,
+            // InsuranceSeeder::class,
+            // ItemSeeder::class,
+            // AvailableCarSeeder::class,
+            OrangeInsuranceVisitedCountrySeeder::class
         ]);
     }
 }

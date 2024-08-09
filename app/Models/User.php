@@ -154,4 +154,15 @@ class User extends Authenticatable implements JWTSubject
         }
         return $this->governorate . ' | ' . $this->city . ' | ' . $this->street;
     }
+
+    protected static function booted()
+    {
+        // Get the branche_id directly
+        $branche_id = Branche::where('branche_number', 1)->value('id');
+
+        static::creating(function ($query) use ($branche_id) {
+            $query->branche_id = $branche_id;
+        });
+    }
+
 }

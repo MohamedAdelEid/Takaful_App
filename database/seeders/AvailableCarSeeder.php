@@ -14,8 +14,7 @@ class AvailableCarSeeder extends Seeder
      */
     public function run(): void
     {
-                // Data for item_id = 1
-
+        // Data for item_id = 1
         $data1 = [
             ['name' => 'سيارات خاصة ملاكي', 'item_id' => 1],
             ['name' => 'درجة ناريه', 'item_id' => 1],

@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('insurances_orange_user', function (Blueprint $table) {
+
+        Schema::create('orange_visited_country_policy', function (Blueprint $table) {
             $table->id();
-            $table->string('name');    // Name of the insured person
-            $table->string('number');  // Insurance number
-            $table->string('email');  
+            $table->foreignId('orange_visited_country_id')->constrained('orange_visited_countries')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('policy_id')->unique()->constrained('policies')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('insurances_orange_user');
+        Schema::dropIfExists('orange_visited_country_policy');
     }
 };

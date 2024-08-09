@@ -13,8 +13,8 @@ class ItemSeeder extends Seeder
      */
     public function run(): void
     {
-          // Data for the items table
-          $items = [
+        // Data for the items table
+        $items = [
             ['name' => 'البند الاول '],  // Assuming this is the name for item_id = 1
             ['name' => 'البند الثاني '],  // Assuming this is the name for item_id = 2
         ];

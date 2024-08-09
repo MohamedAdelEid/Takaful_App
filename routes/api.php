@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Company\OrangeVisitedCountryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -45,7 +46,6 @@ Route::group([
 
     /*------------------------------| Route StoreCarInsurance |------------------------------*/
     Route::post('car-insurance', [PolicyController::class, 'storeCarInsurance']);
-    Route::post('orange-car-insurance', [PolicyController::class, 'orangeCarInsurance']);
 
     /*------------------------------| Route StoreTravelerInsurance |------------------------------*/
     Route::post('traveler-insurance', [PolicyController::class, 'storeTravelerInsurance']);
@@ -53,10 +53,17 @@ Route::group([
     /*------------------------------| Route StoreTravelerInsurance |------------------------------*/
     Route::get('days-travel/{country}', [PolicyController::class, 'getDaysByCountry']);
 
+    /*------------------------------| Route StoreOrangeCarInsurance |------------------------------*/
+    Route::post('orange-car-insurance', [PolicyController::class, 'StoreOrangeCarInsurance']);
+
     /*------------------------------| Route GetAllTypePolices |------------------------------*/
     Route::get('/', [PolicyController::class, 'index']);
+
     //New
     Route::get('/get-mandatory-policies', [PolicyController::class, 'getMandatoryPolicies']);
+
+    /*------------------------------| Route GetVisitedCountries in orange typeInsurance |------------------------------*/
+    Route::get('orange-type-insurance/get-visited-countries' , [OrangeVisitedCountryController::class , 'index']);
 
 });
 

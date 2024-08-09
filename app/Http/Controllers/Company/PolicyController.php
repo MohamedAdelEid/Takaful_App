@@ -53,9 +53,7 @@ class PolicyController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // store compulsory-car-insurance
     public function storeCarInsurance(CarInsuranceRequest $request)
     {
         try {
@@ -157,6 +155,7 @@ class PolicyController extends Controller
         }
     }
 
+    // store traveler-insurance
     public function storeTravelerInsurance(TravelerInsuranceRequest $request)
     {
         try {
@@ -267,6 +266,16 @@ class PolicyController extends Controller
         }
     }
 
+    // store orange-car-insurance
+    public function storeOrangeCarInsurance(Request $request)
+    {
+        try {
+
+        } catch (\Exception $e) {
+            return $this->errorResponse(['massage' => $e->getMessage()], 500);
+        }
+    }
+
     public function getDaysByCountry(Country $country)
     {
         try {
@@ -277,14 +286,6 @@ class PolicyController extends Controller
         }
     }
 
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-    public function destroy(string $id)
-    {
-        //
-    }
     public function getMandatoryPolicies()
     {
         try {
@@ -297,11 +298,14 @@ class PolicyController extends Controller
             return $this->errorResponse(['massage' => $e->getMessage()], 500);
         }
     }
-    // public function orangeCarInsurance(Request $request){
-    //     try {
 
-    //     } catch (\Exception $e) {
-    //         return $this->errorResponse(['massage' => $e->getMessage()], 500);
-    //     }
-    // }
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+    public function destroy(string $id)
+    {
+        //
+    }
+
 }
