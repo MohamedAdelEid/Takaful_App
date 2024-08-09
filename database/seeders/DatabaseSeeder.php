@@ -18,7 +18,9 @@ class DatabaseSeeder extends Seeder
             CompanySeeder::class,
             BrancheSeeder::class,
             InsuranceTypeSeeder::class,
-            InsuranceSeeder::class
+            InsuranceSeeder::class,
+            ItemSeeder::class,
+            AvailableCarSeeder::class
         ]);
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Company\Vehicle;
 use App\Traits\ApiResponseTrait;
 use App\Http\Controllers\Controller;
+use App\Models\AvailableCar;
 
 class VehicleController extends Controller
 {
@@ -28,6 +29,17 @@ class VehicleController extends Controller
                 return $this->errorResponse('No vehicles found', 404);
             }
             return $this->successResponse($vehiclesColor, 'Vehicles color retrieved successfully');
+        }catch(\Exception $e){
+            return $this->errorResponse(['message' => $e->getMessage()],500 );
+        }
+    }
+    public function geAllAvailableCars(){
+        try{
+            $availableCars = AvailableCar::with('item')->get();
+            if(!$availableCars){
+                return $this->errorResponse('No Available cars found', 404);  
+            }
+            return $this->successResponse($availableCars, 'Available cars retrieved successfully');
         }catch(\Exception $e){
             return $this->errorResponse(['message' => $e->getMessage()],500 );
         }

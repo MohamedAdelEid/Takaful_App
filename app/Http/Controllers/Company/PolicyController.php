@@ -297,4 +297,11 @@ class PolicyController extends Controller
             return $this->errorResponse(['massage' => $e->getMessage()], 500);
         }
     }
+    // public function orangeCarInsurance(Request $request){
+    //     try {
+
+    //     } catch (\Exception $e) {
+    //         return $this->errorResponse(['massage' => $e->getMessage()], 500);
+    //     }
+    // }
 }

@@ -45,6 +45,7 @@ Route::group([
 
     /*------------------------------| Route StoreCarInsurance |------------------------------*/
     Route::post('car-insurance', [PolicyController::class, 'storeCarInsurance']);
+    Route::post('orange-car-insurance', [PolicyController::class, 'orangeCarInsurance']);
 
     /*------------------------------| Route StoreTravelerInsurance |------------------------------*/
     Route::post('traveler-insurance', [PolicyController::class, 'storeTravelerInsurance']);
@@ -58,6 +59,9 @@ Route::group([
     Route::get('/get-mandatory-policies', [PolicyController::class, 'getMandatoryPolicies']);
 
 });
+
+Route::get('get-available-cars',[VehicleController::class,'geAllAvailableCars'])->middleware('verify.token');
+
 
 /*------------------------------| Route Get All Countries |------------------------------*/
 Route::get('countries', [CountryController::class, 'index']);

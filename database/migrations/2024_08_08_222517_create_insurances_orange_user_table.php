@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('vehicles', function (Blueprint $table) {
-            $table->string('car_nationality')->nullable()->after('details');
+        Schema::create('insurances_orange_user', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');    // Name of the insured person
+            $table->string('number');  // Insurance number
+            $table->string('email');  
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('vehicles', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('insurances_orange_user');
     }
 };
