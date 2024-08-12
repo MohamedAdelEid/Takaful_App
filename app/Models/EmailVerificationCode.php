@@ -5,14 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EmailVerificationToken extends Model
+class EmailVerificationCode extends Model
 {
     use HasFactory;
-    protected $table = 'email_verification_tokens';
+    protected $table = 'email_verification_code';
     protected $fillable = [
         'email',
-        'token',
-        'expired_at'
+        'code',
+        'is_verified'
     ];
-    
 }

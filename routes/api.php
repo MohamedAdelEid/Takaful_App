@@ -30,6 +30,7 @@ Route::get('profile', [AuthController::class, 'profile'])->middleware(['verify.t
 Route::get('users', [UserController::class, 'getUsers'])->middleware(['verify.token']);
 Route::post('send-reset-password',[AuthController::class, 'sendResetPassword']);
 Route::post('reset-password',[AuthController::class, 'ResetPassword']);
+Route::post('verify-email', [AuthController::class, 'verifyEmail']);
 
  //New
 Route::get('user-activation/{user}', [UserController::class, 'userActivation'])->middleware(['verify.token']);

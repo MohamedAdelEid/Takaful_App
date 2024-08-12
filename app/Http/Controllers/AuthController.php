@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Customs\Services\SendResetPasswordService;
+use App\Customs\Services\SendVerificationCodeService;
 use App\Models\Company\Company;
+use App\Models\EmailVerificationCode;
 use App\Models\User;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Database\QueryException;
@@ -17,7 +19,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class AuthController extends Controller
 {
     use ApiResponseTrait;
-    public function __construct(private SendResetPasswordService $resetPasswordService)
+    public function __construct(private SendResetPasswordService $resetPasswordService,private SendVerificationCodeService $sendVerificationCodeService)
     {
     }
 
@@ -52,9 +54,12 @@ class AuthController extends Controller
                     'user_id' => $user->id
                 ]);
             }
-            $token = JWTAuth::fromUser($user);
-            $user['token'] = $token;
-            return $this->successResponse($user, 'User Registered Successfully', 201);
+            if($user){
+            $this->sendVerificationCodeService->send($user);
+                $token = JWTAuth::fromUser($user);
+                $user['token'] = $token;
+                return $this->successResponse($user, 'User Registered Successfully', 201);
+            }
         } catch (QueryException $exception) {
             if ($exception->errorInfo[1] === 1062) {
                 return $this->errorResponse(['message' => 'enter valid phone number'], 409);
@@ -176,7 +181,7 @@ class AuthController extends Controller
         }
          catch(\Exception $e){
             return $this->errorResponse(['message' => $e->getMessage()],500);
-        } 
+        }
     }
     public function resetPassword(Request $request){
         try {
@@ -190,9 +195,30 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first();
                 $user->password = bcrypt($request->password);
                 $user->save();
-                return $this->successResponse(null, 'Password reset successfully');  
+                return $this->successResponse(null, 'Password reset successfully');
         } catch (\Exception $e) {
             return $this->errorResponse(['message' => $e->getMessage()], 500);
         }
+    }
+    public function verifyEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'code' => 'required|integer'
+        ]);
+
+        $verificationRecord = EmailVerificationCode::where('email', $request->email)
+            ->where('code', $request->code)
+            ->first();
+
+        if (!$verificationRecord) {
+            return response()->json(['message' => 'Invalid verification code or email.'], 400);
+        }
+
+        $verificationRecord->update(['is_verified' => true]);
+
+        User::where('email', $request->email)->update(['email_verified_at' => now()]);
+
+        return response()->json(['message' => 'Email verified successfully.']);
     }
 }
