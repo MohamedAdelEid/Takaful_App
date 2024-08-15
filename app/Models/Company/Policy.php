@@ -68,6 +68,11 @@ class Policy extends Model
         return $this->hasOne(Premium::class);
     }
 
+    public function accident()
+    {
+        return $this->belongsTo(Accident::class);
+    }
+
     public function availableCars()
     {
         return $this->belongsToMany(AvailableCar::class, 'available_car_policy');

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Company\AccidentController;
 use App\Http\Controllers\Company\OrangeVisitedCountryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,7 +47,7 @@ Route::group([
 ], function () {
     /*------------------------------| Route GetAllTypePolices |------------------------------*/
     Route::get('/', [PolicyController::class, 'index']);
-    
+
     /*------------------------------| Route StoreCarInsurance |------------------------------*/
     Route::post('car-insurance', [PolicyController::class, 'storeCarInsurance']);
 
@@ -66,6 +67,18 @@ Route::group([
     Route::get('orange-type-insurance/get-visited-countries', [OrangeVisitedCountryController::class, 'index']);
 
 });
+
+/*------------------------------| Routes Accidents |------------------------------*/
+Route::group([
+    'prefix' => 'accident',
+    'middleware' => 'verify.token'
+], function () {
+
+    /*------------------------------| Create Accident |------------------------------*/
+    Route::post('/', [AccidentController::class, 'store']);
+
+});
+
 
 Route::get('get-available-cars', [VehicleController::class, 'geAllAvailableCars'])->middleware('verify.token');
 
