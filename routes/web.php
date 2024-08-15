@@ -31,7 +31,27 @@ use App\Models\Company\OrangeVisitedCountry;
 */
 
 Route::get('/', function () {
-            dd(round(2.09));
+            // Retrieve the policy with the related data
+            $policy = Policy::latest()
+                ->with(['user', 'branche', 'vehicle', 'premium', 'orangeVisitedCountries', 'availableCars'])
+                ->firstOrFail();
+
+            // Generate the PDF file path and directory
+            $namePdf = 'ORANGE-CAR-INSURANCE-' . $policy->policy_number . '_' . time() . '.pdf';
+            $directoryPath = 'pdf/policies/orange-car-Insurance/';
+            $pathPdf = $directoryPath . $namePdf;
+
+            // Ensure the directory exists
+            if (!Storage::disk('public')->exists($directoryPath)) {
+                Storage::disk('public')->makeDirectory($directoryPath);
+            }
+
+            // Generate the PDF and save it to the storage
+            $pdf = PDF::loadView('policy.generatePdf.orangeCarInsurancePolicy', ['policy' => $policy])
+                ->save(storage_path('app/public/' . $pathPdf));
+
+            // Update the policy with the PDF path
+            $policy->update(['pdf_path' => $pathPdf]);
 });
 
 Route::get(
