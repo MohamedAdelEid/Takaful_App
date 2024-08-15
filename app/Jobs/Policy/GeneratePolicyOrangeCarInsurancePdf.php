@@ -33,7 +33,7 @@ class GeneratePolicyOrangeCarInsurancePdf implements ShouldQueue
         try {
             // Retrieve the policy with the related data
             $policy = Policy::where('id', $this->policy->id)
-                ->with(['user', 'branche', 'vehicle', 'premium', 'orangeVisitedCountries.item', 'availableCars'])
+                ->with(['user', 'branche', 'vehicle', 'premium', 'orangeVisitedCountries', 'availableCars'])
                 ->firstOrFail();
 
             // Generate the PDF file path and directory
