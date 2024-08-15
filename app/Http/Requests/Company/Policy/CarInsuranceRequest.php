@@ -28,8 +28,8 @@ class CarInsuranceRequest extends FormRequest
             'car_power' => 'required|integer|min:0',
             'car_number_of_seats' => 'required|integer|min:1',
             'car_year_of_manufacturing' => 'required|integer|digits:4',
-            'car_plate_number' => 'required|string|max:255|unique:vehicles,plate_number',
-            'car_chassis_number' => 'required|string|max:255|unique:vehicles,chassis_number',
+            'car_plate_number' => 'required|string|max:255',                        // |unique:vehicles,plate_number
+            'car_chassis_number' => 'required|string|max:255',                      // |unique:vehicles,chassis_number
             'car_color' => 'required|string|max:255',
             'car_governorate' => 'required|string|max:255',
         ];
@@ -64,12 +64,12 @@ class CarInsuranceRequest extends FormRequest
             'car_plate_number.required' => 'رقم لوحة السيارة مطلوب',
             'car_plate_number.string' => 'رقم لوحة السيارة يجب أن يكون نص',
             'car_plate_number.max' => 'رقم لوحة السيارة يجب ألا يزيد عن 255 حرفًا',
-            'car_plate_number.unique' => 'رقم لوحة السيارة موجود بالفعل',
+            // 'car_plate_number.unique' => 'رقم لوحة السيارة موجود بالفعل',
 
             'car_chassis_number.required' => 'رقم هيكل السيارة مطلوب',
             'car_chassis_number.string' => 'رقم هيكل السيارة يجب أن يكون نص',
             'car_chassis_number.max' => 'رقم هيكل السيارة يجب ألا يزيد عن 255 حرفًا',
-            'car_chassis_number.unique' => 'رقم هيكل السيارة موجود بالفعل',
+            // 'car_chassis_number.unique' => 'رقم هيكل السيارة موجود بالفعل',
 
             'car_color.required' => 'لون السيارة مطلوب',
             'car_color.string' => 'لون السيارة يجب أن يكون نص',

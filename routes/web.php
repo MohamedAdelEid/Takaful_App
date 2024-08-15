@@ -14,6 +14,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Company\OrangeVisitedCountry;
 
 // use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 
@@ -30,7 +31,7 @@ use Illuminate\Support\Facades\Storage;
 */
 
 Route::get('/', function () {
-
+            dd(round(2.49));
 });
 
 Route::get(

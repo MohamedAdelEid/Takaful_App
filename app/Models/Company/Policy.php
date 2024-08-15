@@ -2,6 +2,7 @@
 
 namespace App\Models\Company;
 
+use App\Models\AvailableCar;
 use App\Models\User;
 use App\Models\User\Trip;
 use App\Observers\Company\PolicyObServer;
@@ -13,6 +14,7 @@ class Policy extends Model
     use HasFactory;
     public static $management;
     public static $insuranceTypeId;
+    public static $type;
 
     protected $casts = [
         'created_at' => 'datetime:Y-m-d H:i',
@@ -65,11 +67,22 @@ class Policy extends Model
     {
         return $this->hasOne(Premium::class);
     }
+
+    public function availableCars()
+    {
+        return $this->belongsToMany(AvailableCar::class, 'available_car_policy');
+    }
+
+    public function orangeVisitedCountries()
+    {
+        return $this->belongsToMany(OrangeVisitedCountry::class, 'orange_visited_country_policy');
+    }
+
     protected static function booted()
     {
         static::creating(function ($policy) {
             $policyObserver = new PolicyObserver();
-            $policyObserver->creating($policy, static::$management, static::$insuranceTypeId);
+            $policyObserver->creating($policy, static::$type, static::$management, static::$insuranceTypeId);
         });
     }
 

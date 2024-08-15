@@ -86,6 +86,8 @@ return [
 
     'currency' => env('APP_CURRENCY', 'LYD'),
 
+    'country' => env('APP_COUNTRY' , 'LBY'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale
