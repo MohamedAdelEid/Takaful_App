@@ -50,8 +50,8 @@ class GeneratePolicyOrangeCarInsurancePdf implements ShouldQueue
             $pdf = PDF::loadView('policy.generatePdf.orangeCarInsurancePolicy', ['policy' => $policy])
                 ->save(storage_path('app/public/' . $pathPdf));
 
-            // Update the policy with the PDF path
-            $policy->update(['pdf_path' => $pathPdf]);
+            $policy->pdf_path = $pathPdf;
+            $policy->save();
 
         } catch (\Exception $e) {
             // Log the error and rethrow the exception
