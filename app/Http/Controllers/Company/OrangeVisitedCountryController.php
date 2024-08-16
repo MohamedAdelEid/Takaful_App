@@ -17,6 +17,11 @@ class OrangeVisitedCountryController extends Controller
         try {
             $countries = OrangeVisitedCountry::all();
 
+            // Ensure accessors are added to each model
+            $countries->each(function ($country) {
+                $country->num_countries = $country->num_countries;
+            });
+
             return $this->successResponse($countries, 'Visited Countries retrieved successfully!', 200);
         } catch (Exception $e) {
             return $this->errorResponse(['error' => 'An error occurred!', 'massage' => $e->getMessage()], 500);

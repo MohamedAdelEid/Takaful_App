@@ -2,11 +2,16 @@
 
 namespace App\Helper;
 
+use App\Models\AvailableCar;
+use App\Models\Company\OrangeVisitedCountry;
+use App\Models\Item;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Response;
 
 class Policy
 {
 
+    // compulsory_car_insurance
     public static function getPremiumByPowerCar($power)
     {
 
@@ -41,6 +46,7 @@ class Policy
         return $premium;
     }
 
+    // traveler_insurance 
     public static function getPremiumsTravelerInsurance($days, $countryId, $traveler)
     {
         $age = $traveler->age;
@@ -345,6 +351,221 @@ class Policy
         $premium['stamps'] = 0.250;
         $premium['issuance_fees'] = 2;
         $premium['total_premium'] = $premium['net_premiums'] + $premium['tax'] + $premium['supervision_fees'] + $premium['stamps'] + $premium['issuance_fees'];
+
+        return $premium;
+    }
+
+    // orange_car_insurance
+    public static function getPremiumsOrangeInsurance($request)
+    {
+
+        // Handle RequestDate
+        $startDate = $request->start_date;
+        $insurancePeriod = $request->insurance_period;
+        $countryId = $request->country_visited_id;
+        $availableCarId = $request->available_car_id;
+
+        // give id each OrangeVisitedCountry 
+        $tunisiaId = OrangeVisitedCountry::where('name', 'تونس')->value('id');
+        $algeriaId = OrangeVisitedCountry::where('name', 'الجزائر')->value('id');
+        $algeriaTunisiaId = OrangeVisitedCountry::where('name', 'تونس والجزائر')->value('id');
+        $egyptId = OrangeVisitedCountry::where('name', 'مصر')->value('id');
+
+        // set static values to premium
+        $premium['issuance_fees'] = 10;
+        $premium['stamps'] = 0.5;
+
+        if ($countryId == $tunisiaId) {
+            $minDays = 7;
+            $maxDays = 90;
+
+            // 1 - Check if Insurance_period < 7 && > 90 day
+            if ($insurancePeriod < $minDays) {
+                return Response::json(['error' => ['massage' => "مدة التامين يجب ان تكون اكثر من $minDays ايام"]], 422);
+            } else if ($insurancePeriod > $maxDays) {
+                return Response::json(['error' => ['massage' => "مدة التامين يجب ان تكون اقل من $maxDays يوم"]], 404);
+            }
+
+            // add end_date to array request
+            $end_date = Carbon::parse($startDate)->addDays($insurancePeriod)->toDateTimeString();
+            $request->merge(['end_date' => $end_date]);
+
+            // 2.1 - Check if avaliable_car related any item ! 
+            $item1Id = Item::where('name', 'البند الاول')->value('id');
+            $item2Id = Item::where('name', 'البند الثاني')->value('id');
+
+            $avilableCarItem1 = AvailableCar::with('item')
+                ->where('id', $availableCarId)
+                ->whereHas('item', function ($query) use ($item1Id) {
+                    $query->where('id', $item1Id);
+                })
+                ->first();
+
+            $avilableCarItem2 = AvailableCar::with('item')
+                ->where('id', $availableCarId)
+                ->whereHas('item', function ($query) use ($item2Id) {
+                    $query->where('id', $item2Id);
+                })
+                ->first();
+
+            if ($avilableCarItem1) {
+
+                $dailyPremium = 7;
+                $increaseSupervisionFees = 0.035;
+                $startTax = 1;
+                $extraDays = $insurancePeriod - $minDays;
+
+                $premium['net_premiums'] = $dailyPremium * $insurancePeriod;
+                $premium['supervision_fees'] = $insurancePeriod * $increaseSupervisionFees;
+                $premium['tax'] = $startTax + 0.5 * floor(($insurancePeriod - 8) / 7);
+
+                $premium['total_premium'] = $premium['net_premiums'] + $premium['tax'] + $premium['supervision_fees'] + $premium['stamps'] + $premium['issuance_fees'];
+
+            } else if ($avilableCarItem2) {
+
+                $dailyPremium = 8;
+                $increaseSupervisionFees = 0.04;
+                $startTax = 1;
+                $extraDays = $insurancePeriod - $minDays;
+
+                $premium['net_premiums'] = $dailyPremium * $insurancePeriod;
+                $premium['supervision_fees'] = $increaseSupervisionFees * $insurancePeriod;
+                $premium['tax'] = ((floor($extraDays / 5) * 0.5) + $startTax);
+
+                $premium['total_premium'] = $premium['net_premiums'] + $premium['tax'] + $premium['supervision_fees'] + $premium['stamps'] + $premium['issuance_fees'];
+
+            }
+
+        } else if ($countryId == $algeriaId) {
+            $minDays = 7;
+            $maxDays = 90;
+
+            // 1 - Check if Insurance_period < 7 && > 90 day
+            if ($insurancePeriod < $minDays) {
+                return Response::json(['error' => ['massage' => "مدة التامين يجب ان تكون اكثر من $minDays ايام"]], 422);
+            } else if ($insurancePeriod > $maxDays) {
+                return Response::json(['error' => ['massage' => "مدة التامين يجب ان تكون اقل من $maxDays يوم"]], 404);
+            }
+
+            // add end_date to array request
+            $end_date = Carbon::parse($startDate)->addDays($insurancePeriod)->toDateTimeString();
+            $request->merge(['end_date' => $end_date]);
+
+            // 2.1 - Check if avaliable_car related any item ! 
+            $item1Id = Item::where('name', 'البند الاول')->value('id');
+            $item2Id = Item::where('name', 'البند الثاني')->value('id');
+
+            $avilableCarItem1 = AvailableCar::with('item')
+                ->where('id', $availableCarId)
+                ->whereHas('item', function ($query) use ($item1Id) {
+                    $query->where('id', $item1Id);
+                })
+                ->first();
+
+            $avilableCarItem2 = AvailableCar::with('item')
+                ->where('id', $availableCarId)
+                ->whereHas('item', function ($query) use ($item2Id) {
+                    $query->where('id', $item2Id);
+                })
+                ->first();
+
+            if ($avilableCarItem1) {
+
+                $dailyPremium = 7;
+                $increaseSupervisionFees = 0.035;
+                $startTax = 1;
+                $extraDays = $insurancePeriod - $minDays;
+
+                $premium['net_premiums'] = $dailyPremium * $insurancePeriod;
+                $premium['supervision_fees'] = $insurancePeriod * $increaseSupervisionFees;
+                $premium['tax'] = $startTax + 0.5 * floor(($insurancePeriod - 8) / 7);
+
+                $premium['total_premium'] = $premium['net_premiums'] + $premium['tax'] + $premium['supervision_fees'] + $premium['stamps'] + $premium['issuance_fees'];
+
+            } else if ($avilableCarItem2) {
+
+                $dailyPremium = 8;
+                $increaseSupervisionFees = 0.04;
+                $startTax = 1;
+                $extraDays = $insurancePeriod - $minDays;
+
+                $premium['net_premiums'] = $dailyPremium * $insurancePeriod;
+                $premium['supervision_fees'] = $increaseSupervisionFees * $insurancePeriod;
+                $premium['tax'] = ((floor($extraDays / 5) * 0.5) + $startTax);
+
+                $premium['total_premium'] = $premium['net_premiums'] + $premium['tax'] + $premium['supervision_fees'] + $premium['stamps'] + $premium['issuance_fees'];
+
+            }
+
+        } else if ($countryId == $algeriaTunisiaId) {
+
+            $minDays = 7;
+            $maxDays = 90;
+
+            // 1 - Check if Insurance_period < 7 && > 90 day
+            if ($insurancePeriod < $minDays) {
+                return Response::json(['error' => ['massage' => "مدة التامين يجب ان تكون اكثر من $minDays ايام"]], 422);
+            } else if ($insurancePeriod > $maxDays) {
+                return Response::json(['error' => ['massage' => "مدة التامين يجب ان تكون اقل من $maxDays يوم"]], 404);
+            }
+
+            // add end_date to array request
+            $end_date = Carbon::parse($startDate)->addDays($insurancePeriod)->toDateTimeString();
+            $request->merge(['end_date' => $end_date]);
+
+            // 2 - Calculate premium
+            $increaseSupervisionFees = 0.055;
+            $dailyPremium = 11;
+            $premium['net_premiums'] = $dailyPremium * $insurancePeriod;
+            $premium['supervision_fees'] = $insurancePeriod * $increaseSupervisionFees;
+            $premium['tax'] = round($premium['net_premiums'] * 0.01);
+
+            $premium['total_premium'] = $premium['net_premiums'] + $premium['tax'] + $premium['supervision_fees'] + $premium['stamps'] + $premium['issuance_fees'];
+
+        } else if ($request->country == $egyptId) {
+
+            $minDays = 15;
+            $maxDays = 90;
+
+            // 1 - Check if Insurance_period < 7 && > 90 day
+            if ($insurancePeriod < $minDays) {
+                return Response::json(['error' => ['massage' => "مدة التامين يجب ان تكون اكثر من $minDays ايام"]], 422);
+            } else if ($insurancePeriod > $maxDays) {
+                return Response::json(['error' => ['massage' => "مدة التامين يجب ان تكون اقل من $maxDays يوم"]], 404);
+            }
+
+            // add end_date to array request
+            $end_date = Carbon::parse($startDate)->addDays($insurancePeriod)->toDateTimeString();
+            $request->merge(['end_date' => $end_date]);
+
+            // 2 - Calculate premium
+            $dailyPremium = 3;
+            $increaseSupervisionFees = 0.015;
+
+            $premium['issuance_fees'] = 10;
+            $premium['stamps'] = 0.5;
+            $premium['net_premiums'] = $dailyPremium * $insurancePeriod;
+            $premium['supervision_fees'] = $increaseSupervisionFees * $insurancePeriod;
+
+            if ($insurancePeriod >= 15 && $insurancePeriod <= 16) {
+                $premium['tax'] = 0.5;
+            } else if ($insurancePeriod >= 17 && $insurancePeriod <= 33) {
+                $premium['tax'] = 1;
+            } else if ($insurancePeriod >= 34 && $insurancePeriod <= 50) {
+                $premium['tax'] = 1.5;
+            } else if ($insurancePeriod >= 51 && $insurancePeriod <= 66) {
+                $premium['tax'] = 2;
+            } else if ($insurancePeriod >= 67 && $insurancePeriod <= 83) {
+                $premium['tax'] = 2.5;
+            } else if ($insurancePeriod >= 84 && $insurancePeriod <= 90) {
+                $premium['tax'] = 3;
+            }
+
+            $premium['total_premium'] = $premium['net_premiums'] + $premium['tax'] + $premium['supervision_fees'] + $premium['stamps'] + $premium['issuance_fees'];
+
+        } else {
+            return Response::json(["error" => ['massage' => 'البلد المزار غير صحيحة']], 404);
+        }
 
         return $premium;
     }
