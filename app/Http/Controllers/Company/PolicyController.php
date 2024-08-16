@@ -394,13 +394,15 @@ class PolicyController extends Controller
         }
     }
 
-    public function update(Request $request, string $id)
+    public function numOfPaidPolicies()
     {
-        //
+        try {
+            $data = Policy::where('status','active')->count();
+            return $this->successResponse($data, ' Policies Counted successfully');
+        } catch (\Exception $e) {
+            return $this->errorResponse(['massage' => $e->getMessage()], 500);
+        }
     }
-    public function destroy(string $id)
-    {
-        //
-    }
+    
 
 }

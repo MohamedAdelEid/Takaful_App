@@ -1,15 +1,16 @@
 <?php
 
-use App\Http\Controllers\Company\AccidentController;
-use App\Http\Controllers\Company\OrangeVisitedCountryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Company\PolicyController;
 use App\Http\Controllers\Company\CountryController;
 use App\Http\Controllers\Company\VehicleController;
+use App\Http\Controllers\Company\AccidentController;
+use App\Http\Controllers\Company\OrangeVisitedCountryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,3 +90,13 @@ Route::get('countries', [CountryController::class, 'index']);
 //New
 Route::get('get-all-cars-model', [VehicleController::class, 'geAllVehiclesModel']);
 Route::get('get-all-cars-colors', [VehicleController::class, 'geAllVehiclesColor']);
+
+
+
+/*------------------------------| New |------------------------------*/
+
+Route::get('num-of-paid-policies',[PolicyController::class , 'numOfPaidPolicies'])->middleware('verify.token');
+
+
+Route::get('search',[SearchController::class , 'search'])->middleware('verify.token');
+
