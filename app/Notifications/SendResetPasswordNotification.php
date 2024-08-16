@@ -10,14 +10,11 @@ use Illuminate\Notifications\Notification;
 class SendResetPasswordNotification extends Notification
 {
     use Queueable;
-    protected $url;
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct($url)
+    protected $code;
+
+    public function __construct($code)
     {
-        $this->url = $url;
-        //
+        $this->code = $code;
     }
 
     /**
@@ -37,7 +34,7 @@ class SendResetPasswordNotification extends Notification
     {
         return (new MailMessage)
             ->line('You are receiving this email because we received a password reset request for your account.')
-            ->action('Reset Password From This Link', $this->url)
+            ->action('Reset Password From This Link', $this->code)
             ->line('If you did not request a password reset, no further action is required.');
     }
 
