@@ -54,14 +54,13 @@ class PolicyController extends Controller
 
             // Only select required columns from the policies table
             $policies = $policiesQuery->get();
-dd($policies);
+
             $policies->each(function ($policy) {
                 $policy->type_policy = $policy->insurance->name;
                 $policy->branche_name = $policy->branche->name;
 
                 // Unset the fields that are no longer needed
                 unset($policy->insurance);
-                unset($policy->branche_id);
                 unset($policy->branche);
             });
 
