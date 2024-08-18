@@ -15,12 +15,12 @@ class InsuranceTypeSeeder extends Seeder
     {
         InsuranceType::create([
             'insurance_type_number' => 103,
-            'name' => 'الإجباري',
+            'name' => 'إجباري',
         ]);
 
         InsuranceType::create([
             'insurance_type_number' => 104,
-            'name' => 'البرتقالية',
+            'name' => 'برتقالية',
         ]);
     }
 }

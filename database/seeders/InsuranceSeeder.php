@@ -23,13 +23,13 @@ class InsuranceSeeder extends Seeder
         Insurance::create([
             'company_id' => $campanyId,
             'insurance_number' => 100,
-            'name' => 'تأمين السيارات',
+            'name' => 'سيارات',
         ]);
 
         Insurance::create([
             'company_id' => $campanyId,
             'insurance_number' => 509,
-            'name' => 'تأمين المسافرين',
+            'name' => 'مسافرين',
         ]);
 
         $insuranceId = Insurance::where('insurance_number', 100)->value('id');

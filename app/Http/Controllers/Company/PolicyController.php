@@ -17,6 +17,7 @@ use App\Models\Company\Policy;
 use App\Models\Company\Premium;
 use App\Models\Company\Vehicle;
 use App\Models\Company\Country;
+use App\Models\User;
 use App\Models\User\Dependent;
 use App\Models\User\Traveler;
 use App\Models\User\Trip;
@@ -40,23 +41,33 @@ class PolicyController extends Controller
     public function index()
     {
         try {
-            $policies = Policy::get();
+            $user = Auth::user();
+
+            $policiesQuery = Policy::query();
+
+            if ($user->role == 'company') {
+                $policiesQuery->with(['insurance:id,name', 'branche:id,name', 'insuranceType:id,name']);
+            } else if ($user->role == 'user') {
+                $policiesQuery->where('user_id', $user->id)
+                    ->with(['insurance:id,name', 'branche:id,name', 'insuranceType:id,name']);
+            }
+
+            // Fetch policies and hide unnecessary attributes
+            $policies = $policiesQuery->get()->makeHidden(['insurance', 'branche', 'insuranceType']);
 
             $policies->each(function ($policy) {
-                $policy->type_policy = $policy->insurance->name;
-                $policy->name_user = $policy->user->first_name . ' ' . $policy->user->last_name;
+                $policy->type_policy = $policy->insuranceType->name ?? $policy->insurance->name;
                 $policy->branche_name = $policy->branche->name;
-                unset($policy->insurance);
-                unset($policy->branche_id);
-                unset($policy->branche);
-                unset($policy->user);
             });
 
             return $this->successResponse($policies, 'Policies retrieved successfully!', 200);
+
         } catch (Exception $e) {
             return $this->errorResponse(['An error occurred'], 500);
         }
     }
+
+
 
     // store compulsory-car-insurance
     public function storeCarInsurance(CarInsuranceRequest $request)
@@ -397,12 +408,12 @@ class PolicyController extends Controller
     public function numOfPaidPolicies()
     {
         try {
-            $data = Policy::where('status','active')->count();
+            $data = Policy::where('status', 'active')->count();
             return $this->successResponse($data, ' Policies Counted successfully');
         } catch (\Exception $e) {
             return $this->errorResponse(['massage' => $e->getMessage()], 500);
         }
     }
-    
+
 
 }
