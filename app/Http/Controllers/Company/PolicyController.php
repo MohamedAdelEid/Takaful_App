@@ -63,7 +63,6 @@ class PolicyController extends Controller
                 unset($policy->insurance);
                 unset($policy->branche_id);
                 unset($policy->branche);
-                unset($policy->user);
             });
 
             return $this->successResponse($policies, 'Policies retrieved successfully!', 200);
