@@ -48,6 +48,11 @@ class Policy extends Model
         return $this->belongsTo(Insurance::class);
     }
 
+    public function insuranceType()
+    {
+        return $this->belongsTo(InsuranceType::class)->withDefault();
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

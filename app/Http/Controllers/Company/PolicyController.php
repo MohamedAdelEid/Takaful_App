@@ -46,22 +46,18 @@ class PolicyController extends Controller
             $policiesQuery = Policy::query();
 
             if ($user->role == 'company') {
-                $policiesQuery->with(['insurance:id,name', 'branche:id,name']);
+                $policiesQuery->with(['insurance:id,name', 'branche:id,name', 'insuranceType:id,name']);
             } else if ($user->role == 'user') {
                 $policiesQuery->where('user_id', $user->id)
-                    ->with(['insurance:id,name', 'branche:id,name']);
+                    ->with(['insurance:id,name', 'branche:id,name', 'insuranceType:id,name']);
             }
 
-            // Only select required columns from the policies table
-            $policies = $policiesQuery->get();
+            // Fetch policies and hide unnecessary attributes
+            $policies = $policiesQuery->get()->makeHidden(['insurance', 'branche', 'insuranceType']);
 
             $policies->each(function ($policy) {
-                $policy->type_policy = $policy->insurance->name;
+                $policy->type_policy = $policy->insuranceType->name ?? $policy->insurance->name;
                 $policy->branche_name = $policy->branche->name;
-
-                // Unset the fields that are no longer needed
-                unset($policy->insurance);
-                unset($policy->branche);
             });
 
             return $this->successResponse($policies, 'Policies retrieved successfully!', 200);
@@ -70,6 +66,7 @@ class PolicyController extends Controller
             return $this->errorResponse(['An error occurred'], 500);
         }
     }
+
 
 
     // store compulsory-car-insurance
