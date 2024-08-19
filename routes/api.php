@@ -50,7 +50,7 @@ Route::group([
     Route::get('/', [PolicyController::class, 'index']);
 
     /*------------------------------| Route number Polices |------------------------------*/
-    Route::get('/number', [PolicyController::class, 'index']);
+    Route::get('/number', [PolicyController::class, 'totolNumber']);
 
     /*------------------------------| Route StoreCarInsurance |------------------------------*/
     Route::post('car-insurance', [PolicyController::class, 'storeCarInsurance']);

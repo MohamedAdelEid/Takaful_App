@@ -63,7 +63,7 @@ class PolicyController extends Controller
         }
     }
 
-    public function totolnum()
+    public function totolNumber()
     {
         try {
             $user = Auth::user();
