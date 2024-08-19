@@ -19,13 +19,14 @@ class AccidentController extends Controller
      */
     public function index()
     {
-        try{
-            $accidents = Accident::with('policy')->get();
-            return $this->successResponse($accidents,'Accidents retrieved successfully');
+        try {
+            $accidents = Accident::with('policy', 'user:id,name')->get();
+
+            return $this->successResponse($accidents, 'Accidents retrieved successfully');
         } catch (Exception $e) {
             return $this->errorResponse(['massage' => 'An error occurred', 'error' => $e->getMessage()], 500);
         }
-     
+
     }
 
     /**
@@ -56,5 +57,5 @@ class AccidentController extends Controller
         }
     }
 
-   
+
 }
