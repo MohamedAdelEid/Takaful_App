@@ -49,6 +49,9 @@ Route::group([
     /*------------------------------| Route GetAllTypePolices |------------------------------*/
     Route::get('/', [PolicyController::class, 'index']);
 
+    /*------------------------------| Route number Polices |------------------------------*/
+    Route::get('/number', [PolicyController::class, 'index']);
+
     /*------------------------------| Route StoreCarInsurance |------------------------------*/
     Route::post('car-insurance', [PolicyController::class, 'storeCarInsurance']);
 

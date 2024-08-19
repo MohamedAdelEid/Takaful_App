@@ -31,7 +31,7 @@ use App\Models\Company\OrangeVisitedCountry;
 */
 
 Route::get('/', function () {
-    dd(Carbon::parse('1990-05-15')->age);
+    dd(Policy::count());
 });
 
 Route::get(

@@ -63,7 +63,19 @@ class PolicyController extends Controller
         }
     }
 
+    public function totolnum()
+    {
+        try {
+            $user = Auth::user();
 
+            $policies = Policy::count();
+
+            return $this->successResponse($policies, 'Number Policies retrieved successfully!', 200);
+
+        } catch (Exception $e) {
+            return $this->errorResponse(['An error occurred'], 500);
+        }
+    }
 
     // store compulsory-car-insurance
     public function storeCarInsurance(CarInsuranceRequest $request)
