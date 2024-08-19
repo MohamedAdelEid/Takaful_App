@@ -49,7 +49,7 @@ class Policy
     // traveler_insurance 
     public static function getPremiumsTravelerInsurance($days, $countryId, $traveler)
     {
-        $age = Carbon::parse($traveler->date_of_birth)->age;
+        $age = $traveler->age;
         $coverage_zone = $traveler->getCoverageZoneByCountry($countryId);
 
         // Check Age 
@@ -345,7 +345,7 @@ class Policy
 
             }
         } else {
-            return Response::json(['error' => 'العمر غير مقبول'], 404);
+            return Response::json(['error' => ['massage' => 'العمر غير مقبول']], 404);
         }
 
         $premium['stamps'] = 0.250;
