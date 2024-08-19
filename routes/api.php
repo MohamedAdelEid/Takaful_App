@@ -77,6 +77,7 @@ Route::group([
 
     /*------------------------------| Create Accident |------------------------------*/
     Route::post('/', [AccidentController::class, 'store']);
+    Route::get('/all-accident', [AccidentController::class, 'index']);
 
 });
 
@@ -100,3 +101,5 @@ Route::get('num-of-paid-policies',[PolicyController::class , 'numOfPaidPolicies'
 
 Route::get('search',[SearchController::class , 'search'])->middleware('verify.token');
 
+
+Route::get('/all-accident', [AccidentController::class, 'index']);

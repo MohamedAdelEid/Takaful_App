@@ -19,7 +19,13 @@ class AccidentController extends Controller
      */
     public function index()
     {
-        //
+        try{
+            $accidents = Accident::with('policy')->get();
+            return $this->successResponse($accidents,'Accidents retrieved successfully');
+        } catch (Exception $e) {
+            return $this->errorResponse(['massage' => 'An error occurred', 'error' => $e->getMessage()], 500);
+        }
+     
     }
 
     /**
@@ -50,27 +56,5 @@ class AccidentController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+   
 }
