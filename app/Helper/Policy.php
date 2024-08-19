@@ -49,7 +49,7 @@ class Policy
     // traveler_insurance 
     public static function getPremiumsTravelerInsurance($days, $countryId, $traveler)
     {
-        $age = $traveler->age;
+        $age = Carbon::parse($traveler->date_of_birth)->age;
         $coverage_zone = $traveler->getCoverageZoneByCountry($countryId);
 
         // Check Age 

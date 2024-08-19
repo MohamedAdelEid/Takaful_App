@@ -231,6 +231,9 @@ class PolicyController extends Controller
 
             // Create Premiums for traveler insurance
             $premium = PolicyHelper::getPremiumsTravelerInsurance($days, $countryId, $traveler);
+            if (is_a($premium, 'Illuminate\Http\JsonResponse')) {
+                return $premium; // Return the error response from the helper
+            }
             $premium['policy_id'] = $policy->id;
             Premium::create($premium);
 
