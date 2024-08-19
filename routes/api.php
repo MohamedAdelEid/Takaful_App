@@ -77,7 +77,7 @@ Route::group([
 
     /*------------------------------| Create Accident |------------------------------*/
     Route::post('/', [AccidentController::class, 'store']);
-    Route::get('/all-accident', [AccidentController::class, 'index']);
+    Route::get('/all', [AccidentController::class, 'index']);
 
 });
 

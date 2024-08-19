@@ -345,7 +345,7 @@ class Policy
 
             }
         } else {
-            return Response::json(['error' => ['massage' => 'العمر غير مقبول']], 404);
+            return Response::json(['massage' => 'العمر غير مقبول'], 404);
         }
 
         $premium['stamps'] = 0.250;
