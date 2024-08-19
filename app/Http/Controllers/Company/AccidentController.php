@@ -20,7 +20,7 @@ class AccidentController extends Controller
     public function index()
     {
         try {
-            $accidents = Accident::with('policy', 'user:id,name')->get();
+            $accidents = Accident::with('policy', 'user:id,first_name,last_name,nick_name')->get();
 
             return $this->successResponse($accidents, 'Accidents retrieved successfully');
         } catch (Exception $e) {
