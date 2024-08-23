@@ -64,11 +64,14 @@ Route::group([
     /*------------------------------| Route StoreOrangeCarInsurance |------------------------------*/
     Route::post('orange-car-insurance', [PolicyController::class, 'StoreOrangeCarInsurance']);
 
-    //New
-    Route::get('/get-mandatory-policies', [PolicyController::class, 'getMandatoryPolicies']);
+    /*------------------------------| Route GetAllCompulsoryPolicies |------------------------------*/
+    Route::get('get-compulsory-policies', [PolicyController::class, 'getMandatoryPolicies']);
 
     /*------------------------------| Route GetVisitedCountries in orange typeInsurance |------------------------------*/
     Route::get('orange-type-insurance/get-visited-countries', [OrangeVisitedCountryController::class, 'index']);
+
+    /*------------------------------| Route Policies Active |------------------------------*/
+    Route::get('num-of-paid-policies', [PolicyController::class, 'numOfPaidPolicies']);
 
 });
 
@@ -84,25 +87,23 @@ Route::group([
 
 });
 
-
+/*------------------------------| Get AvailableCars |------------------------------*/
 Route::get('get-available-cars', [VehicleController::class, 'geAllAvailableCars'])->middleware('verify.token');
 
-
 /*------------------------------| Route Get All Countries |------------------------------*/
-Route::get('countries', [CountryController::class, 'index']);
+Route::get('countries', [CountryController::class, 'index'])->middleware('verify.token');
 
-//New
-Route::get('get-all-cars-model', [VehicleController::class, 'geAllVehiclesModel']);
-Route::get('get-all-cars-colors', [VehicleController::class, 'geAllVehiclesColor']);
+/*------------------------------| Routes Vehicle |------------------------------*/
+Route::group([
+    'prefix' => 'vehicle',
+    'middleware' => 'verify.token'
+], function () {
 
+    /*------------------------------| Route GetModelVehicle |------------------------------*/
+    Route::get('get-all-vehicle-model', [VehicleController::class, 'geAllVehiclesModel']);
 
+    /*------------------------------| Route GetColorVehicle |------------------------------*/
+    Route::get('get-all-vehicle-colors', [VehicleController::class, 'geAllVehiclesColor']);
+});
 
-/*------------------------------| New |------------------------------*/
-
-Route::get('num-of-paid-policies',[PolicyController::class , 'numOfPaidPolicies'])->middleware('verify.token');
-
-
-Route::get('search',[SearchController::class , 'search'])->middleware('verify.token');
-
-
-Route::get('/all-accident', [AccidentController::class, 'index']);
+Route::get('search-policies', [SearchController::class, 'search'])->middleware('verify.token');
