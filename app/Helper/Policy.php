@@ -370,7 +370,7 @@ class Policy
         $algeriaId = OrangeVisitedCountry::where('name', 'الجزائر')->value('id');
         $algeriaTunisiaId = OrangeVisitedCountry::where('name', 'تونس والجزائر')->value('id');
         $egyptId = OrangeVisitedCountry::where('name', 'مصر')->value('id');
-
+        
         // set static values to premium
         $premium['issuance_fees'] = 10;
         $premium['stamps'] = 0.5;
@@ -616,7 +616,7 @@ class Policy
 
             $premium['total_premium'] = $premium['net_premiums'] + $premium['tax'] + $premium['supervision_fees'] + $premium['stamps'] + $premium['issuance_fees'];
 
-        } else if ($request->country == $egyptId) {
+        } else if ($countryId == $egyptId) {
 
             $minDays = 15;
             $maxDays = 90;
