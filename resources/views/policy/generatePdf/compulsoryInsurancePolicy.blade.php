@@ -149,7 +149,7 @@
                     <span>النوع :</span>
                 </td>
                 <td style="text-align: center">
-                    <span>{{ $policy->vehicle->type . $policy->vehicle->model }}</span>
+                    <span>{{ $policy->vehicle->type . ' - ' . $policy->vehicle->model }}</span>
                 </td>
                 <td style="text-align: left">
                     <span> Car Type</span>

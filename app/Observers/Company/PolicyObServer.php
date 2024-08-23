@@ -38,7 +38,11 @@ class PolicyObServer
              * generate number it consists of four numbers for each branche special-number start from start month
              */
             // => get last policy for this branche
-            $lastPolicy = Policy::where('branche_id', '=', $brancheNumber)->whereMonth('created_at', $month)->latest()->first();
+            $lastPolicy = Policy::where('branche_id', '=', $brancheNumber)
+                ->where('policy_number', 'like', "%$management%")
+                ->whereMonth('created_at', $month)
+                ->latest()
+                ->first();
 
             if ($lastPolicy) {
                 $numberLastPolicy = $lastPolicy->policy_number;
