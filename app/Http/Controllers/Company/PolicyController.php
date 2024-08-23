@@ -331,7 +331,6 @@ class PolicyController extends Controller
             if (is_a($premium, 'Illuminate\Http\JsonResponse')) {
                 return $premium; // Return the error response from the helper
             }
-            dd($premium);
 
             // Create Policy record
             $policy = Policy::create([
