@@ -41,8 +41,8 @@ class Traveler extends Model
 
     public function getCoverageZoneByCountry($countryId)
     {
-        $zone1Countries = $this->Countries_zone1;
-        $zone2Countries = $this->Countries_zone2;
+        $zone1Countries = Country::whereNotIn('name', ['Libya', 'United States', 'Canada', 'Australia', 'Japan'])->get();
+        $zone2Countries = Country::whereIn('name', ['United States', 'Canada', 'Australia', 'Japan'])->get();
 
         $zone1CountriesId = $zone1Countries->pluck('id')->toArray();
         $zone2CountriesId = $zone2Countries->pluck('id')->toArray();
