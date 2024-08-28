@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ZoomController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SearchController;
@@ -103,3 +104,7 @@ Route::get('search',[SearchController::class , 'search'])->middleware('verify.to
 
 
 Route::get('/all-accident', [AccidentController::class, 'index']);
+
+
+Route::get('zoom/meetings', [ZoomController::class, 'listMeetings']);
+Route::post('zoom/meetings', [ZoomController::class, 'createMeeting']);
