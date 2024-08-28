@@ -17,7 +17,6 @@ use App\Models\Company\Policy;
 use App\Models\Company\Premium;
 use App\Models\Company\Vehicle;
 use App\Models\Company\Country;
-use App\Models\User;
 use App\Models\User\Dependent;
 use App\Models\User\Traveler;
 use App\Models\User\Trip;
@@ -25,12 +24,9 @@ use App\Traits\ApiResponseTrait;
 use App\Helper\Country as CountryHelper;
 use App\Helper\Policy as PolicyHelper;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Storage;
-use Meneses\LaravelMpdf\Facades\LaravelMpdf as PDF;
+
 
 class PolicyController extends Controller
 {
@@ -67,7 +63,19 @@ class PolicyController extends Controller
         }
     }
 
+    public function totolNumber()
+    {
+        try {
+            $user = Auth::user();
 
+            $policies = Policy::count();
+
+            return $this->successResponse($policies, 'Number Policies retrieved successfully!', 200);
+
+        } catch (Exception $e) {
+            return $this->errorResponse(['An error occurred'], 500);
+        }
+    }
 
     // store compulsory-car-insurance
     public function storeCarInsurance(CarInsuranceRequest $request)
@@ -207,7 +215,7 @@ class PolicyController extends Controller
                 'end_date' => $endDate,
             ]);
 
-            // store user_id and insurance_id in table insurance_user => becouse Relation m - m 
+            // store user_id and insurance_id in table insurance_user => because Relation m - m 
             $user->insurances()->attach($insurance->id, [
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -233,11 +241,16 @@ class PolicyController extends Controller
                 'days' => $days
             ]);
 
-
             // Create Premiums for traveler insurance
             $premium = PolicyHelper::getPremiumsTravelerInsurance($days, $countryId, $traveler);
+            if (is_a($premium, 'Illuminate\Http\JsonResponse')) {
+                return $premium; // Return the error response from the helper
+            }
             $premium['policy_id'] = $policy->id;
             Premium::create($premium);
+
+            // Initialize the dependents array
+            $dependents = [];
 
             // Create dependents department[i][ name , passport ,.....]
             if ($request->has('dependents')) {
@@ -277,9 +290,10 @@ class PolicyController extends Controller
 
             return $this->successResponse($responseData, 'Policy Traveler Insurance Created Successfully', 200);
         } catch (Exception $e) {
-            return $this->errorResponse(['massage' => 'An error occurred', 'error' => $e->getMessage()], 500);
+            return $this->errorResponse(['message' => 'An error occurred', 'error' => $e->getMessage()], 500);
         }
     }
+
 
     // store orange-car-insurance
     public function storeOrangeCarInsurance(OrangeCarInsuranceRequest $request)

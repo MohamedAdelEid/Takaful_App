@@ -345,7 +345,7 @@ class Policy
 
             }
         } else {
-            return Response::json(['error' => 'العمر غير مقبول'], 404);
+            return Response::json(['massage' => 'العمر غير مقبول'], 404);
         }
 
         $premium['stamps'] = 0.250;
@@ -370,7 +370,7 @@ class Policy
         $algeriaId = OrangeVisitedCountry::where('name', 'الجزائر')->value('id');
         $algeriaTunisiaId = OrangeVisitedCountry::where('name', 'تونس والجزائر')->value('id');
         $egyptId = OrangeVisitedCountry::where('name', 'مصر')->value('id');
-
+        
         // set static values to premium
         $premium['issuance_fees'] = 10;
         $premium['stamps'] = 0.5;
@@ -473,12 +473,38 @@ class Policy
 
                 $dailyPremium = 7;
                 $increaseSupervisionFees = 0.035;
-                $startTax = 1;
+                $startTax = .5;
                 $extraDays = $insurancePeriod - $minDays;
 
                 $premium['net_premiums'] = $dailyPremium * $insurancePeriod;
                 $premium['supervision_fees'] = $insurancePeriod * $increaseSupervisionFees;
-                $premium['tax'] = $startTax + 0.5 * floor(($insurancePeriod - 8) / 7);
+                if ($insurancePeriod == 7) {
+                    $premium['tax'] = .5;
+                } else if ($insurancePeriod >= 8 && $insurancePeriod <= 14) {
+                    $premium['tax'] = 1;
+                } else if ($insurancePeriod >= 15 && $insurancePeriod <= 21) {
+                    $premium['tax'] = 1.5;
+                } else if ($insurancePeriod >= 22 && $insurancePeriod <= 28) {
+                    $premium['tax'] = 2;
+                } else if ($insurancePeriod >= 29 && $insurancePeriod <= 35) {
+                    $premium['tax'] = 2.5;
+                } else if ($insurancePeriod >= 36 && $insurancePeriod <= 42) {
+                    $premium['tax'] = 3;
+                } else if ($insurancePeriod >= 43 && $insurancePeriod <= 50) {
+                    $premium['tax'] = 3.5;
+                } else if ($insurancePeriod >= 51 && $insurancePeriod <= 57) {
+                    $premium['tax'] = 4;
+                } else if ($insurancePeriod >= 58 && $insurancePeriod <= 64) {
+                    $premium['tax'] = 4.5;
+                } else if ($insurancePeriod >= 65 && $insurancePeriod <= 71) {
+                    $premium['tax'] = 5;
+                } else if ($insurancePeriod >= 72 && $insurancePeriod <= 78) {
+                    $premium['tax'] = 5.5;
+                } else if ($insurancePeriod >= 79 && $insurancePeriod <= 85) {
+                    $premium['tax'] = 6;
+                } else if ($insurancePeriod >= 86 && $insurancePeriod <= 90) {
+                    $premium['tax'] = 6.5;
+                }
 
                 $premium['total_premium'] = $premium['net_premiums'] + $premium['tax'] + $premium['supervision_fees'] + $premium['stamps'] + $premium['issuance_fees'];
 
@@ -491,7 +517,35 @@ class Policy
 
                 $premium['net_premiums'] = $dailyPremium * $insurancePeriod;
                 $premium['supervision_fees'] = $increaseSupervisionFees * $insurancePeriod;
-                $premium['tax'] = ((floor($extraDays / 5) * 0.5) + $startTax);
+                if ($insurancePeriod >= 7 && $insurancePeriod <= 12) {
+                    $premium['tax'] = 1;
+                } else if ($insurancePeriod >= 13 && $insurancePeriod <= 18) {
+                    $premium['tax'] = 1.5;
+                } else if ($insurancePeriod >= 19 && $insurancePeriod <= 25) {
+                    $premium['tax'] = 2;
+                } else if ($insurancePeriod >= 26 && $insurancePeriod <= 31) {
+                    $premium['tax'] = 2.5;
+                } else if ($insurancePeriod >= 32 && $insurancePeriod <= 37) {
+                    $premium['tax'] = 3;
+                } else if ($insurancePeriod >= 38 && $insurancePeriod <= 43) {
+                    $premium['tax'] = 3.5;
+                } else if ($insurancePeriod >= 44 && $insurancePeriod <= 50) {
+                    $premium['tax'] = 4;
+                } else if ($insurancePeriod >= 51 && $insurancePeriod <= 56) {
+                    $premium['tax'] = 4.5;
+                } else if ($insurancePeriod >= 57 && $insurancePeriod <= 62) {
+                    $premium['tax'] = 5;
+                } else if ($insurancePeriod >= 63 && $insurancePeriod <= 68) {
+                    $premium['tax'] = 5.5;
+                } else if ($insurancePeriod >= 69 && $insurancePeriod <= 75) {
+                    $premium['tax'] = 6;
+                } else if ($insurancePeriod >= 76 && $insurancePeriod <= 81) {
+                    $premium['tax'] = 6.5;
+                } else if ($insurancePeriod >= 82 && $insurancePeriod <= 87) {
+                    $premium['tax'] = 7;
+                } else if ($insurancePeriod >= 88 && $insurancePeriod <= 90) {
+                    $premium['tax'] = 7.5;
+                }
 
                 $premium['total_premium'] = $premium['net_premiums'] + $premium['tax'] + $premium['supervision_fees'] + $premium['stamps'] + $premium['issuance_fees'];
 
@@ -518,11 +572,51 @@ class Policy
             $dailyPremium = 11;
             $premium['net_premiums'] = $dailyPremium * $insurancePeriod;
             $premium['supervision_fees'] = $insurancePeriod * $increaseSupervisionFees;
-            $premium['tax'] = round($premium['net_premiums'] * 0.01);
+
+            // calculate tax
+            if ($insurancePeriod >= 7 && $insurancePeriod <= 9) {
+                $premium['tax'] = 1;
+            } else if ($insurancePeriod >= 10 && $insurancePeriod <= 13) {
+                $premium['tax'] = 1.5;
+            } else if ($insurancePeriod >= 14 && $insurancePeriod <= 18) {
+                $premium['tax'] = 2;
+            } else if ($insurancePeriod >= 19 && $insurancePeriod <= 22) {
+                $premium['tax'] = 2.5;
+            } else if ($insurancePeriod >= 23 && $insurancePeriod <= 27) {
+                $premium['tax'] = 3;
+            } else if ($insurancePeriod >= 28 && $insurancePeriod <= 31) {
+                $premium['tax'] = 3.5;
+            } else if ($insurancePeriod >= 32 && $insurancePeriod <= 36) {
+                $premium['tax'] = 4;
+            } else if ($insurancePeriod >= 37 && $insurancePeriod <= 40) {
+                $premium['tax'] = 4;
+            } else if ($insurancePeriod >= 41 && $insurancePeriod <= 45) {
+                $premium['tax'] = 4.5;
+            } else if ($insurancePeriod >= 46 && $insurancePeriod <= 50) {
+                $premium['tax'] = 5.5;
+            } else if ($insurancePeriod >= 51 && $insurancePeriod <= 54) {
+                $premium['tax'] = 6;
+            } else if ($insurancePeriod >= 55 && $insurancePeriod <= 59) {
+                $premium['tax'] = 6.5;
+            } else if ($insurancePeriod >= 60 && $insurancePeriod <= 63) {
+                $premium['tax'] = 7;
+            } else if ($insurancePeriod >= 64 && $insurancePeriod <= 68) {
+                $premium['tax'] = 7.5;
+            } else if ($insurancePeriod >= 69 && $insurancePeriod <= 72) {
+                $premium['tax'] = 8;
+            } else if ($insurancePeriod >= 73 && $insurancePeriod <= 77) {
+                $premium['tax'] = 8.5;
+            } else if ($insurancePeriod >= 78 && $insurancePeriod <= 81) {
+                $premium['tax'] = 9;
+            } else if ($insurancePeriod >= 82 && $insurancePeriod <= 86) {
+                $premium['tax'] = 9.5;
+            } else if ($insurancePeriod >= 87 && $insurancePeriod <= 90) {
+                $premium['tax'] = 10;
+            }
 
             $premium['total_premium'] = $premium['net_premiums'] + $premium['tax'] + $premium['supervision_fees'] + $premium['stamps'] + $premium['issuance_fees'];
 
-        } else if ($request->country == $egyptId) {
+        } else if ($countryId == $egyptId) {
 
             $minDays = 15;
             $maxDays = 90;

@@ -157,16 +157,13 @@
 
         <div style="margin-bottom: 25px"></div>
 
-        @if ($trip->dependents)
+        @if ($trip->dependents->isNotEmpty())
             <div style="border: 2px solid black; padding:10px">
                 <table
                     style="width: 100% ; font-size: 13px ; border:2px solid black; padding:10px ; border-collapse: collapse;">
                     <tr>
                         <td style="text-align: right ; font-weight:bold;font-size:15px ; padding-bottom:13px">
                             <span>المرافقون </span>
-                        </td>
-                        <td style="text-align: left ;font-weight:bold;font-size:15px ; padding-bottom:13px">
-                            <span>Travel Dependents</span>
                         </td>
                     </tr>
 
@@ -331,10 +328,7 @@
     <p style="text-align: left ; font-weight: bold ; border-bottom:1px solid black">
         {{ $zone == 'zone1' ? "Zone 1 $descriptionZone" : "Zone 2 $descriptionZone" }}
     </p>
-    {{-- <p style="text-align: center; padding-top:10px ; font-weight:bold">
-        <span>شركة التكافل للتأمين</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        <span>.Insurance Takaful Co</span>
-    </p> --}}
+
     <p style="text-align: center; padding-top:0px ; font-weight:bold">
         <span>التاريخ : </span> &nbsp; &nbsp; <span>{{ $trip->policy->created_at }}</span> &nbsp; &nbsp; &nbsp;
         &nbsp;
