@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
             // InsuranceSeeder::class,
             // ItemSeeder::class,
             // AvailableCarSeeder::class,
-            // OrangeInsuranceVisitedCountrySeeder::class
+            // OrangeInsuranceVisitedCountrySeeder::class,
+            CoverageAreaSeeder::class
         ]);
     }
 }

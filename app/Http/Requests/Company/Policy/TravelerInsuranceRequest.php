@@ -25,7 +25,7 @@ class TravelerInsuranceRequest extends FormRequest
         $today = Carbon::today();
 
         return [
-            'country_id' => 'required|exists:countries,id',
+            'coverage_area_id' => 'required|exists:coverage_areas,id',
             'days' => 'required|integer|in:10,20,30,45,90,180,365',
             'start_date' => "required|date|after_or_equal:$today",
             'passport_number' => 'required|string|max:255',
@@ -43,8 +43,8 @@ class TravelerInsuranceRequest extends FormRequest
     public function messages()
     {
         return [
-            'country_id.required' => 'يرجى تحديد الدولة.',
-            'country_id.exists' => 'الدولة المحددة غير موجودة.',
+            'coverage_area_id.required' => 'يرجى تحديد منطقة التغطية.',
+            'coverage_area_id.exists' => 'منطقة التغطية المحددة غير موجودة.',
             'days.required' => 'يرجى تحديد عدد الأيام.',
             'days.integer' => 'عدد الأيام يجب أن يكون عددًا صحيحًا.',
             'days.in' => 'عدد الأيام خطأ',

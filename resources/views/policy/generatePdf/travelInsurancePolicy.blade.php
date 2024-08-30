@@ -318,15 +318,14 @@
     <div style="margin-bottom: 10px"></div>
 
     @php
-        $zone = $trip->traveler->getCoverageZoneByCountry($trip->country_id)['zone'];
-        $descriptionZone = $trip->traveler->getCoverageZoneByCountry($trip->country_id)['description'];
+        $zone = $trip->coverageArea;
     @endphp
 
     <p style="text-align: right ; font-weight: bold ;">
-        {{ $zone == 'zone1' ? "هذا العقد يغطي جميع أنحاء العالم ما عدا ليبيا - أمريكا - كندا - اليابان - أستراليا" : "هذا العقد يغطي أمريكا - كندا - اليابان - أستراليا" }}
+        {{ $zone->zone_number == 1 ? 'هذا العقد يغطي جميع أنحاء العالم ما عدا ليبيا - أمريكا - كندا - اليابان - أستراليا' : 'هذا العقد يغطي أمريكا - كندا - اليابان - أستراليا' }}
     </p>
     <p style="text-align: left ; font-weight: bold ; border-bottom:1px solid black">
-        {{ $zone == 'zone1' ? "Zone 1 $descriptionZone" : "Zone 2 $descriptionZone" }}
+        {{ $zone->zone_number == 1 ? "Zone 1 $zone->title" : "Zone 2 $zone->title" }}
     </p>
 
     <p style="text-align: center; padding-top:0px ; font-weight:bold">

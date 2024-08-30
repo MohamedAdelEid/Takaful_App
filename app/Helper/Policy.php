@@ -3,6 +3,7 @@
 namespace App\Helper;
 
 use App\Models\AvailableCar;
+use App\Models\Company\CoverageArea;
 use App\Models\Company\OrangeVisitedCountry;
 use App\Models\Item;
 use Illuminate\Support\Carbon;
@@ -47,16 +48,16 @@ class Policy
     }
 
     // traveler_insurance 
-    public static function getPremiumsTravelerInsurance($days, $countryId, $traveler)
+    public static function getPremiumsTravelerInsurance($days, $coverageAreaId, $traveler)
     {
         $age = $traveler->age;
-        $coverage_zone = $traveler->getCoverageZoneByCountry($countryId);
+        $zoneNumber = CoverageArea::where('id', $coverageAreaId)->value('zone_number');
 
         // Check Age 
         if ($age >= 2 && $age <= 15) {
 
             // Check zone is zone1 or zone2
-            if ($coverage_zone['zone'] == 'zone1') {
+            if ($zoneNumber == 1) {
 
                 // check number of days
                 if ($days == 10) {
@@ -103,7 +104,7 @@ class Policy
                     ];
                 }
 
-            } else if ($coverage_zone['zone'] == 'zone2') {
+            } else if ($zoneNumber == 2) {
 
                 // check number of days
                 if ($days == 10) {
@@ -153,7 +154,7 @@ class Policy
             }
 
         } else if ($age >= 16 && $age <= 69) {
-            if ($coverage_zone['zone'] == 'zone1') {
+            if ($zoneNumber == 1) {
 
                 // check number of days
                 if ($days == 10) {
@@ -200,7 +201,7 @@ class Policy
                     ];
                 }
 
-            } else if ($coverage_zone['zone'] == 'zone2') {
+            } else if ($zoneNumber == 2) {
 
                 // check number of days
                 if ($days == 10) {
@@ -249,7 +250,7 @@ class Policy
 
             }
         } else if ($age >= 70 && $age <= 75) {
-            if ($coverage_zone['zone'] == 'zone1') {
+            if ($zoneNumber == 1) {
 
                 // check number of days
                 if ($days == 10) {
@@ -296,7 +297,7 @@ class Policy
                     ];
                 }
 
-            } else if ($coverage_zone['zone'] == 'zone2') {
+            } else if ($zoneNumber == 2) {
 
                 // check number of days
                 if ($days == 10) {
@@ -370,7 +371,7 @@ class Policy
         $algeriaId = OrangeVisitedCountry::where('name', 'الجزائر')->value('id');
         $algeriaTunisiaId = OrangeVisitedCountry::where('name', 'تونس والجزائر')->value('id');
         $egyptId = OrangeVisitedCountry::where('name', 'مصر')->value('id');
-        
+
         // set static values to premium
         $premium['issuance_fees'] = 10;
         $premium['stamps'] = 0.5;

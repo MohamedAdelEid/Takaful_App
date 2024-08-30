@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Company\CoverageAreaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -76,6 +77,10 @@ Route::group([
 
 });
 
+/*------------------------------| Route Get All Coverage Areas |------------------------------*/
+Route::get('coverage-area', [CoverageAreaController::class, 'index'])->middleware('verify.token');
+
+
 /*------------------------------| Routes Accidents |------------------------------*/
 Route::group([
     'prefix' => 'accident',
@@ -110,10 +115,10 @@ Route::group([
 
 /*------------------------------| New |------------------------------*/
 
-Route::get('num-of-paid-policies',[PolicyController::class , 'numOfPaidPolicies'])->middleware('verify.token');
+Route::get('num-of-paid-policies', [PolicyController::class, 'numOfPaidPolicies'])->middleware('verify.token');
 
 
-Route::get('search',[SearchController::class , 'search'])->middleware('verify.token');
+Route::get('search', [SearchController::class, 'search'])->middleware('verify.token');
 
 
 Route::get('/all-accident', [AccidentController::class, 'index']);

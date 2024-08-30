@@ -200,7 +200,7 @@ class PolicyController extends Controller
             Policy::$management = 'GAC';
             Policy::$insuranceTypeId = $insurance->insurance_number;
 
-            $countryId = $request->country_id;
+            $coverageAreaId = $request->coverage_area_id;
             $days = $request->days;
             $startDate = Carbon::parse($request->start_date);
             $endDate = $startDate->copy()->addDays($days);
@@ -236,13 +236,13 @@ class PolicyController extends Controller
             // create trip
             $trip = Trip::create([
                 'traveler_id' => $traveler->id,
-                'country_id' => $countryId,
+                'coverage_area_id' => $coverageAreaId,
                 'policy_id' => $policy->id,
                 'days' => $days
             ]);
 
             // Create Premiums for traveler insurance
-            $premium = PolicyHelper::getPremiumsTravelerInsurance($days, $countryId, $traveler);
+            $premium = PolicyHelper::getPremiumsTravelerInsurance($days, $coverageAreaId, $traveler);
             if (is_a($premium, 'Illuminate\Http\JsonResponse')) {
                 return $premium; // Return the error response from the helper
             }
@@ -284,6 +284,7 @@ class PolicyController extends Controller
             $responseData = [
                 'policy' => $policy,
                 'traveler' => $traveler,
+                'trip' => $trip,
                 'dependents' => $dependents,
                 'premium' => $premium
             ];

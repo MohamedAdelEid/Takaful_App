@@ -2,6 +2,7 @@
 
 namespace App\Models\User;
 
+use App\Models\Company\CoverageArea;
 use App\Models\Company\Policy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -37,4 +38,8 @@ class Trip extends Model
         return $this->belongsToMany(Dependent::class, 'dependent_trip');
     }
 
+    public function coverageArea()
+    {
+        return $this->belongsTo(CoverageArea::class);
+    }
 }
