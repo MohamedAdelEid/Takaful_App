@@ -49,11 +49,10 @@ class GeneratePolicyCarInsurancePdf implements ShouldQueue
             $qrCode = QrCode::format('png')->size(200)->generate(config('app.url') . '/public/storage/' . $pathPdf);
             // Convert PNG to base64
             $qrCodeBase64 = base64_encode($qrCode);
-            $qrCode = $qrCodeBase64;
 
             $pdf = PDF::loadView('policy.generatePdf.compulsoryInsurancePolicy', [
                 'policy' => $policy,
-                'qrCode' => $qrCode
+                'qrCode' => $qrCodeBase64
             ])
                 ->save(storage_path('app/public/' . $pathPdf));
 
