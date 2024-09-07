@@ -32,6 +32,7 @@ class CarInsuranceRequest extends FormRequest
             'car_chassis_number' => 'required|string|max:255',                      // |unique:vehicles,chassis_number
             'car_color' => 'required|string|max:255',
             'car_governorate' => 'required|string|max:255',
+            'image' =>  'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ];
     }
 

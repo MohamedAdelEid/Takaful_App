@@ -340,6 +340,10 @@
         <p>
             <img width="80px" dir="ltr" src="data:image/png;base64,{{ $qrCode }}" alt="QR Code" />
         </p>
+        @if (!empty($image))
+        <h3>Car Insurance Image:</h3>
+        <img src="{{ public_path('images/car_insurance/' . $image) }}" alt="Car Insurance Image" style="width: 200px; height: auto;" />
+    @endif
     </div>
 </body>
 

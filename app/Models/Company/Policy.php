@@ -33,6 +33,7 @@ class Policy extends Model
         'total_amount_letters',
         'detelis',
         'status',
+        'image'
     ];
 
     /**

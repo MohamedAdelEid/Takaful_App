@@ -77,7 +77,7 @@ class PolicyController extends Controller
         }
     }
 
-    // store compulsory-car-insurance
+    // store compulsory-car-insurance   التأمين الاجباري
     public function storeCarInsurance(CarInsuranceRequest $request)
     {
         try {
@@ -98,10 +98,14 @@ class PolicyController extends Controller
             } else if ($insuranceType->status != 'active') {
                 return $this->errorResponse(['message' => 'Insurance Type is inactive'], 404);
             }
-
+            if($request->hasFile('image')){
+                $image = $request->file('image');
+                $imageName = time().'.'.$image->getClientOriginalExtension();
+               $imagePath = $image->move(public_path('images/car_insurance'), $imageName);
+            }
             // Ensure the user is authenticated
             $user = Auth::user();
-
+            
             if (!$user) {
                 return $this->errorResponse(['message' => 'User not authenticated'], 401);
             }
@@ -109,7 +113,6 @@ class PolicyController extends Controller
             // Set management property for Policy model
             Policy::$management = 'MTR';
             Policy::$insuranceTypeId = $insuranceType->id;
-
             // Create Policy record
             $policy = Policy::create([
                 'branche_id' => $user->branche_id,
@@ -118,6 +121,7 @@ class PolicyController extends Controller
                 'user_id' => $user->id,
                 'start_date' => Carbon::now()->addDay(),
                 'end_date' => Carbon::now()->addYear(),
+                'image' => $imagePath
             ]);
 
             // Get the premium details based on the car power
@@ -178,7 +182,7 @@ class PolicyController extends Controller
         }
     }
 
-    // store traveler-insurance
+    // store traveler-insurance تأمين المسافرين 
     public function storeTravelerInsurance(TravelerInsuranceRequest $request)
     {
         try {
@@ -296,7 +300,7 @@ class PolicyController extends Controller
     }
 
 
-    // store orange-car-insurance
+    // store orange-car-insurance التأمين البرتقالي 
     public function storeOrangeCarInsurance(OrangeCarInsuranceRequest $request)
     {
         try {
