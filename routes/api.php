@@ -46,7 +46,7 @@ Route::resource('note', NoteController::class)->middleware(['verify.token']);
 /*------------------------------| Routes Policy |------------------------------*/
 Route::group([
     'prefix' => 'policy',
-    'middleware' => 'verify.token'
+    // 'middleware' => 'verify.token'
 ], function () {
     /*------------------------------| Route GetAllTypePolices |------------------------------*/
     Route::get('/', [PolicyController::class, 'index']);
