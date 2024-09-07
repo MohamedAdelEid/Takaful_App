@@ -7,7 +7,7 @@ return [
     'default_font'             => 'NotoSansArabic',
     'margin_left'              => 15,
     'margin_right'             => 15,
-    'margin_top'               => 20,
+    'margin_top'               => 10,
     'margin_bottom'            => 0,
     'margin_header'            => 0,
     'margin_footer'            => 0,

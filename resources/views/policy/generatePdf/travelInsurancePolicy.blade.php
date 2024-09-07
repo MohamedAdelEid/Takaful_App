@@ -315,8 +315,6 @@
         </tr>
     </table>
 
-    <div style="margin-bottom: 10px"></div>
-
     @php
         $zone = $trip->coverageArea;
     @endphp
@@ -328,11 +326,24 @@
         {{ $zone->zone_number == 1 ? "Zone 1 $zone->title" : "Zone 2 $zone->title" }}
     </p>
 
-    <p style="text-align: center; padding-top:0px ; font-weight:bold">
-        <span>التاريخ : </span> &nbsp; &nbsp; <span>{{ $trip->policy->created_at }}</span> &nbsp; &nbsp; &nbsp;
-        &nbsp;
-        <span> : Date</span>
-    </p>
+
+    <table>
+        <tr>
+            <td style="text-align: right;">
+                <img width="60px" src="data:image/png;base64,{{ $qrCode }}" alt="QR Code" />
+            </td>
+            <td style="text-align: left;">
+                <p style="padding-top:0px ; font-weight:bold">
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    <span>التاريخ : </span> &nbsp;
+                    &nbsp; <span>{{ $trip->policy->created_at }}</span> &nbsp; &nbsp;
+                    &nbsp;
+                    &nbsp;
+                    <span> : Date</span>
+                </p>
+            </td>
+        </tr>
+    </table>
 
     </div>
 </body>

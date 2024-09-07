@@ -11,6 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Meneses\LaravelMpdf\Facades\LaravelMpdf as PDF;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class GeneratePolicyTravelInsurancePdf implements ShouldQueue
 {
@@ -48,7 +49,15 @@ class GeneratePolicyTravelInsurancePdf implements ShouldQueue
                 Storage::disk('public')->makeDirectory($mainDirectoryPath);
             }
 
-            $pdf = PDF::loadView('policy.generatePdf.travelInsurancePolicy', ['trip' => $trip])
+            // Generate Qrcode for link pdf
+            $qrCode = QrCode::format('png')->size(200)->generate(config('app.url') . '/public/storage/' . $pathPdf);
+            // Convert PNG to base64
+            $qrCodeBase64 = base64_encode($qrCode);
+
+            $pdf = PDF::loadView('policy.generatePdf.travelInsurancePolicy', [
+                'trip' => $trip,
+                'qrCode' => $qrCodeBase64
+            ])
                 ->save(storage_path('app/public/' . $pathPdf));
 
             $trip->policy->pdf_path = $pathPdf;
