@@ -83,52 +83,58 @@ class PolicyController extends Controller
         try {
             // Get Car Insurance "insurance_number" = 100 
             $insurance = Insurance::where('insurance_number', '100')->first();
-
+    
             if (!$insurance) {
                 return $this->errorResponse(['message' => 'Insurance not found'], 404);
             } else if ($insurance->status != 'active') {
                 return $this->errorResponse(['message' => 'Insurance is inactive'], 404);
             }
-
+    
             // Get Car Insurance_type "insurance_number" = 103 
             $insuranceType = InsuranceType::where('insurance_type_number', '103')->first();
-
+    
             if (!$insuranceType) {
                 return $this->errorResponse(['message' => 'insurance Type not found'], 404);
             } else if ($insuranceType->status != 'active') {
                 return $this->errorResponse(['message' => 'Insurance Type is inactive'], 404);
             }
-            if($request->hasFile('image')){
+    
+            // Initialize $imagePath
+            $imagePath = null;
+    
+            if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time().'.'.$image->getClientOriginalExtension();
-               $imagePath = $image->move(public_path('images/car_insurance'), $imageName);
+                $imagePath = $image->move(public_path('images/car_insurance'), $imageName);
             }
+    
             // Ensure the user is authenticated
             $user = Auth::user();
             
             if (!$user) {
                 return $this->errorResponse(['message' => 'User not authenticated'], 401);
             }
-
+    
             // Set management property for Policy model
             Policy::$management = 'MTR';
             Policy::$insuranceTypeId = $insuranceType->id;
+            
             // Create Policy record
             $policy = Policy::create([
                 'branche_id' => $user->branche_id,
                 'insurance_id' => $insurance->id,
-                'insurance_type_id' => $insuranceType->id, // This might need a default or valid value
+                'insurance_type_id' => $insuranceType->id,
                 'user_id' => $user->id,
                 'start_date' => Carbon::now()->addDay(),
                 'end_date' => Carbon::now()->addYear(),
                 'image' => $imagePath
             ]);
-
+    
             // Get the premium details based on the car power
             $premuim = PolicyHelper::getPremiumByPowerCar($request->car_power);
             $premuim['policy_id'] = $policy->id;
             $premuim = Premium::create($premuim);
-
+    
             // Create Vehicle record
             $vehicle = Vehicle::create([
                 'user_id' => $user->id,
@@ -144,43 +150,33 @@ class PolicyController extends Controller
                 'vehicle_place_of_registration' => $request->car_governorate,
                 'purpose_of_license' => 'خاصة',
             ])->setHidden([
-                        'user_id',
-                        'policy_id'
-                    ]);
-
-            // store user_id and insurance_type_id in table insurance_type_user => becouse if know user is vip or no
-            $user->insuranceTypes()->attach($insuranceType->id, [
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
+                'user_id',
+                'policy_id'
             ]);
-
-            // store user_id and insurance_id in table insurance_user => becouse Relation m - m 
-            $user->insurances()->attach($insurance->id, [
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
-
-            /* 
-             * Generate pdf for car insurance policy
-             */
+    
+            // Attach relationships
+            $user->insuranceTypes()->attach($insuranceType->id, ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
+            $user->insurances()->attach($insurance->id, ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
+    
             // Dispatch the job for PDF generation
             GeneratePolicyCarInsurancePdf::dispatch($policy);
-
+    
             // Prepare response data
             $responseData = [
                 'policy' => $policy,
                 'premuim' => $premuim,
                 'vehicle' => $vehicle,
             ];
-
+    
             return $this->successResponse($responseData, 'Policy Car Insurance Created successfully', 200);
         } catch (Exception $e) {
             // Log the detailed error message and stack trace
             \Log::error('Error storing car insurance: ' . $e->getMessage(), ['exception' => $e]);
-
+    
             return $this->errorResponse(['message' => 'An error occurred', 'error' => $e->getMessage()], 500);
         }
     }
+    
 
     // store traveler-insurance تأمين المسافرين 
     public function storeTravelerInsurance(TravelerInsuranceRequest $request)
