@@ -36,7 +36,8 @@ class TravelerInsuranceRequest extends FormRequest
             'dependents.*.passport_number' => 'required_with:dependents|string|max:255|distinct',
             'dependents.*.passport_name' => 'required_with:dependents|string|max:255',
             'dependents.*.date_of_birth' => 'required_with:dependents|date',
-            'dependents.*.gender' => 'required_with:dependents|string|in:Male,Female'
+            'dependents.*.gender' => 'required_with:dependents|string|in:Male,Female',
+            'image' =>  'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ];
     }
 

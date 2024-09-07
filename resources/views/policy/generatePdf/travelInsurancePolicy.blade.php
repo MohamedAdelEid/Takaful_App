@@ -344,6 +344,13 @@
             </td>
         </tr>
     </table>
+    
+     {{-- View Image --}}
+    @if (!empty($image))
+    <h3>Car Insurance Image:</h3>
+    <img src="{{ base_path('public/images/travel_insurance/' . $image) }}" alt="Car Insurance Image" style="width: 200px; height: auto;" />
+    @endif
+
 
     </div>
 </body>

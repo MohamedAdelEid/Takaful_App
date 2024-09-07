@@ -56,7 +56,8 @@ class GeneratePolicyTravelInsurancePdf implements ShouldQueue
 
             $pdf = PDF::loadView('policy.generatePdf.travelInsurancePolicy', [
                 'trip' => $trip,
-                'qrCode' => $qrCodeBase64
+                'qrCode' => $qrCodeBase64,
+                'image' => $trip['image']
             ])
                 ->save(storage_path('app/public/' . $pathPdf));
 

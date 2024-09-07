@@ -188,6 +188,14 @@ class PolicyController extends Controller
             if (!$insurance) {
                 return $this->errorResponse(['message' => 'Insurance not found'], 404);
             }
+        // Initialize $imagePath
+            $imagePath = null;
+                
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time().'.'.$image->getClientOriginalExtension();
+                $imagePath = $image->move(public_path('images/travel_insurance'), $imageName);
+            }
 
             // Ensure the user is authenticated
             $user = Auth::user();
@@ -213,6 +221,7 @@ class PolicyController extends Controller
                 'user_id' => $user->id,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
+                'image' => $imagePath
             ]);
 
             // store user_id and insurance_id in table insurance_user => because Relation m - m 
@@ -240,7 +249,7 @@ class PolicyController extends Controller
                 'policy_id' => $policy->id,
                 'days' => $days
             ]);
-
+            $trip['image'] = $policy->image;
             // Create Premiums for traveler insurance
             $premium = PolicyHelper::getPremiumsTravelerInsurance($days, $coverageAreaId, $traveler);
             if (is_a($premium, 'Illuminate\Http\JsonResponse')) {
