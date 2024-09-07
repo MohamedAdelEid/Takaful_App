@@ -327,9 +327,9 @@
             </tr>
         </table>
 
-        <div style="margin-bottom: 50px"></div>
+        <div style="margin-bottom: 20px"></div>
 
-        <p style="text-align: center; padding-top:10px ; font-weight:bold">
+        <p style="text-align: center; font-weight:bold">
             <span>شركة التكافل للتأمين</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
             <span>.Insurance Takaful Co</span>
         </p>
@@ -337,7 +337,9 @@
             <span>التاريخ : </span> &nbsp; &nbsp; <span>{{ $policy->created_at }}</span> &nbsp; &nbsp; &nbsp; &nbsp;
             <span> : Date</span>
         </p>
-
+        <p>
+            <img width="80px" dir="ltr" src="data:image/png;base64,{{ $qrCode }}" alt="QR Code" />
+        </p>
     </div>
 </body>
 
