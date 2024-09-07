@@ -342,8 +342,8 @@
         </p>
         @if (!empty($image))
         <h3>Car Insurance Image:</h3>
-        <img src="{{ public_path('images/car_insurance/' . $image) }}" alt="Car Insurance Image" style="width: 200px; height: auto;" />
-    @endif
+        <img src="{{ base_path('public/images/car_insurance/' . $image) }}" alt="Car Insurance Image" style="width: 200px; height: auto;" />
+        @endif
     </div>
 </body>
 
