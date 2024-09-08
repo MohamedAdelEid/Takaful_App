@@ -347,7 +347,7 @@
 
     {{-- View Image --}}
     @if ($imagePassport)
-        <h3>Car Insurance Image:</h3>
+        <h3>Image Passport : </h3>
         <img src="{{ $imagePassport }}" alt="Car Insurance Image" style="width: 200px; height: auto;" />
     @endif
 

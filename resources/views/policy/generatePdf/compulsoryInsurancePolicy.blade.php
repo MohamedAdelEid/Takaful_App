@@ -341,7 +341,7 @@
             <img width="80px" dir="ltr" src="data:image/png;base64,{{ $qrCode }}" alt="QR Code" />
         </p>
         @if ($imageCarBrochure)
-            <h3>Car Insurance Image:</h3>
+            <h3>Image Car Brochure : </h3>
             <img src="{{ $imageCarBrochure }}" alt="Car Insurance Image" style="width: 200px; height: auto;" />
         @endif
     </div>
