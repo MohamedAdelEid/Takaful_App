@@ -342,7 +342,6 @@
         </p>
         @if ($imageCarBrochure)
             <h3>Car Insurance Image:</h3>
-            <p>{{ $imageCarBrochure }}</p>
             <img src="{{ $imageCarBrochure }}" alt="Car Insurance Image" style="width: 200px; height: auto;" />
         @endif
     </div>

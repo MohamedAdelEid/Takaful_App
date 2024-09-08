@@ -18,15 +18,17 @@ class GeneratePolicyTravelInsurancePdf implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $trip;
+    protected $imagePassport;
 
     /**
      * Create a new job instance.
      *
      * @param Trip $trip
      */
-    public function __construct(Trip $trip)
+    public function __construct(Trip $trip, $imagePassport)
     {
         $this->trip = $trip;  // Corrected assignment
+        $this->imagePassport = $imagePassport;
     }
 
     /**
@@ -54,10 +56,14 @@ class GeneratePolicyTravelInsurancePdf implements ShouldQueue
             // Convert PNG to base64
             $qrCodeBase64 = base64_encode($qrCode);
 
+            if ($this->imagePassport) {
+                $imagePassport = config('app.url') . '/public/storage/' . $this->imagePassport;
+            }
+
             $pdf = PDF::loadView('policy.generatePdf.travelInsurancePolicy', [
                 'trip' => $trip,
                 'qrCode' => $qrCodeBase64,
-                'image' => $trip['image']
+                'imagePassport' => $imagePassport
             ])
                 ->save(storage_path('app/public/' . $pathPdf));
 

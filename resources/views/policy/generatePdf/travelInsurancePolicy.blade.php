@@ -346,11 +346,9 @@
     </table>
 
     {{-- View Image --}}
-    @if (!empty($image))
+    @if ($imagePassport)
         <h3>Car Insurance Image:</h3>
-        {{ base_path('public/images/travel_insurance/' . $image) }}
-        <img src="{{ base_path('public/images/travel_insurance/' . $image) }}" alt="Car Insurance Image"
-            style="width: 200px; height: auto;" />
+        <img src="{{ $imagePassport }}" alt="Car Insurance Image" style="width: 200px; height: auto;" />
     @endif
 
 
