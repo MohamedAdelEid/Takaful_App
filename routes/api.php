@@ -136,10 +136,11 @@ use Illuminate\Support\Facades\Mail;
 Route::get('/test-email', function () {
     $data = ['message' => 'This is a test email from Laravel'];
     Mail::raw($data['message'], function($message) {
-        $message->to('dev.mohamedsaadphp@gmail.com') 
+        $message->to('info@ammn-sherktak.com') 
                 ->subject('Test Email from Laravel')
                 ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
     });
 
     return 'Email sent!';
 });
+
