@@ -16,6 +16,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Company\OrangeVisitedCountry;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Http\Controllers\Medical_InsuranceController;
 
 
 // use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
@@ -42,3 +43,8 @@ Route::get(
         $policy = Policy::find(1);
     }
 );
+
+Route::post('/send-insurance-email', [Medical_InsuranceController::class, 'sendInsuranceEmail']);
+Route::get('/test-insurance-email', function () {
+    return view('test');
+});
