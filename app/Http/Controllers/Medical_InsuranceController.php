@@ -27,6 +27,6 @@ class Medical_InsuranceController extends Controller
             session()->flash('error', 'Insurance not found!');
         }
 
-        return redirect()->back(); // Make sure to redirect after processing
+        return redirect()->back(); 
     }
 }
